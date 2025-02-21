@@ -1,0 +1,39 @@
+﻿using CompetitionManagement.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace CompetitionManagement.Infrastructure.Data.Configurations;
+
+public class CompetitionDefinitionConfiguration : IEntityTypeConfiguration<CompetitionDefinition>
+{
+    public void Configure(EntityTypeBuilder<CompetitionDefinition> builder)
+    {
+        builder.ToTable("CompetitionDefinitions");
+
+        builder.HasKey(c => c.Id);
+        
+        builder.Property(c => c.Id).ValueGeneratedOnAdd();
+
+        builder.Property(c => c.Title)
+            .IsRequired()
+            .HasMaxLength(300);
+
+        builder.Property(c => c.Date)
+            .IsRequired();
+
+        builder.Property(c => c.Address)
+            .IsRequired()
+            .HasMaxLength(500);
+
+        builder.Property(c => c.BannerImageId)
+            .IsRequired();
+
+        builder.Property(c => c.CertificateImageId)
+            .IsRequired();
+        
+        builder.HasOne(ag => ag.PlannerUser)
+            .WithMany(u => u.CompetitionDefinitions)
+            .HasForeignKey(ag => ag.PlannerUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}
