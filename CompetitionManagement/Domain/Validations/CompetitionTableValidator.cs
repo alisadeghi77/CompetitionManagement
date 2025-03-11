@@ -3,11 +3,11 @@ using FluentValidation;
 
 namespace CompetitionManagement.Domain.Validations;
 
-public class CompetitionTableValidator : AbstractValidator<Competition>
+public class CompetitionTableValidator : AbstractValidator<CompetitionDetails>
 {
     public CompetitionTableValidator()
     {
-        RuleFor(x => x.CompetitionDefinitionId)
+        RuleFor(x => x.CompetitionId)
             .GreaterThan(0).WithMessage(" مسابقه الزامی است.");
 
         RuleFor(x => x.AgeGroupId)

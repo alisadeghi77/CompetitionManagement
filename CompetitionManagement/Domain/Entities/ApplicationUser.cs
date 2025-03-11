@@ -18,47 +18,34 @@ public class ApplicationUser : IdentityUser
         string username,
         UserType type,
         string firstName,
-        string lastName,
-        DateTime birthDate,
-        string nationalId,
-        bool isCitizens)
+        string lastName)
     {
         UserName = username;
         Type = type;
         FirstName = firstName;
         LastName = lastName;
-        BirthDate = birthDate;
-        NationalId = nationalId;
-        IsCitizens = isCitizens;
     }
 
     public UserType Type { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
-    public DateTime BirthDate { get; set; }
-    public string NationalId { get; private set; }
-    public bool IsCitizens { get; set; }
+    public DateTime? BirthDate { get; set; }
+    public string? NationalId { get; private set; }
     
-    public virtual List<CompetitionDefinition> CompetitionDefinitions { get; set; } = new();
+    public virtual List<Competition> CompetitionDefinitions { get; set; } = new();
 
     
     public static ApplicationUser Create(
         string phoneNumber,
         UserType type,
         string firstName,
-        string lastName,
-        DateTime birthDate,
-        string nationalId,
-        bool isCitizens)
+        string lastName)
     {
         var user = new ApplicationUser(
             phoneNumber,
             type,
             firstName,
-            lastName,
-            birthDate,
-            nationalId,
-            isCitizens);
+            lastName);
 
         new UserValidator().ValidateAndThrow(user);
         return user;

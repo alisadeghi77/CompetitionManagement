@@ -26,7 +26,7 @@ public class CompetitionTableDetailsConfiguration : IEntityTypeConfiguration<Com
         builder.Property(ctd => ctd.Status)
             .IsRequired();
           
-        builder.HasOne(x => x.Competition)
+        builder.HasOne(x => x.CompetitionDetails)
             .WithMany(x => x.CompetitionTableDetails)
             .HasForeignKey(x => x.CompetitionTableId)
             .OnDelete(DeleteBehavior.Restrict)

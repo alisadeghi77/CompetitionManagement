@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CompetitionManagement.Infrastructure.Data.Configurations;
 
-public class CompetitionDefinitionConfiguration : IEntityTypeConfiguration<CompetitionDefinition>
+public class CompetitionDefinitionConfiguration : IEntityTypeConfiguration<Competition>
 {
-    public void Configure(EntityTypeBuilder<CompetitionDefinition> builder)
+    public void Configure(EntityTypeBuilder<Competition> builder)
     {
         builder.ToTable("CompetitionDefinitions");
 
@@ -28,7 +28,7 @@ public class CompetitionDefinitionConfiguration : IEntityTypeConfiguration<Compe
         builder.Property(c => c.BannerImageId)
             .IsRequired();
 
-        builder.Property(c => c.CertificateImageId)
+        builder.Property(c => c.LicenseImageId)
             .IsRequired();
         
         builder.HasOne(ag => ag.PlannerUser)

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CompetitionManagement.Infrastructure.Data.Configurations;
 
-public class CompetitionTableConfiguration : IEntityTypeConfiguration<Competition>
+public class CompetitionTableConfiguration : IEntityTypeConfiguration<CompetitionDetails>
 {
-    public void Configure(EntityTypeBuilder<Competition> builder)
+    public void Configure(EntityTypeBuilder<CompetitionDetails> builder)
     {
         builder.ToTable("CompetitionTables");
 
@@ -19,9 +19,9 @@ public class CompetitionTableConfiguration : IEntityTypeConfiguration<Competitio
         builder.Property(ct => ct.Style)
             .IsRequired();
         
-        builder.HasOne(x => x.CompetitionDefinition)
+        builder.HasOne(x => x.Competition)
             .WithMany()
-            .HasForeignKey(x => x.CompetitionDefinitionId)
+            .HasForeignKey(x => x.CompetitionId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
         

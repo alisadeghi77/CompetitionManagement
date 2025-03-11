@@ -14,9 +14,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
 
     public DbSet<AgeGroup> AgeGroups => Set<AgeGroup>();
-    public DbSet<CompetitionDefinition> CompetitionDefinitions => Set<CompetitionDefinition>();
+    public DbSet<Competition> Competitions => Set<Competition>();
     public DbSet<CompetitionRegister> CompetitionRegisters => Set<CompetitionRegister>();
-    public DbSet<Competition> CompetitionTables => Set<Competition>();
+    public DbSet<CompetitionDetails> CompetitionTables => Set<CompetitionDetails>();
     public DbSet<CompetitionTableDetail> CompetitionTableDetails => Set<CompetitionTableDetail>();
     public DbSet<FileEntity> Files => Set<FileEntity>();
 

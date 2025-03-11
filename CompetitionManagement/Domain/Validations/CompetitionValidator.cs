@@ -2,7 +2,7 @@
 
 namespace CompetitionManagement.Domain.Validations;
 
-public class CompetitionValidator : AbstractValidator<Entities.CompetitionDefinition>
+public class CompetitionValidator : AbstractValidator<Entities.Competition>
 {
     public CompetitionValidator()
     {

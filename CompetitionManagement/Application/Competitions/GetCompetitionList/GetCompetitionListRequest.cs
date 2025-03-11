@@ -15,7 +15,7 @@ public class GetCompetitionListRequestHandler(ApplicationDbContext dbContext) :
                 await dbContext.CompetitionTables
                         .Select(s => new CompetitionDto(
                                 s.Id,
-                                s.CompetitionDefinitionId,
+                                s.CompetitionId,
                                 s.AgeGroupId,
                                 s.Weight,
                                 s.Style))

@@ -8,7 +8,7 @@ namespace CompetitionManagement.Domain.Entities;
 public class CompetitionTableDetail : BaseAuditableEntity
 {
     public long CompetitionTableId { get; private set; }
-    public required Competition Competition { get; set; }
+    public required CompetitionDetails CompetitionDetails { get; set; }
 
     public long FirstCompetitionRegisterId { get; private set; }
     public required CompetitionRegister FirstCompetitionRegister { get; set; }
@@ -22,15 +22,15 @@ public class CompetitionTableDetail : BaseAuditableEntity
     public static CompetitionTableDetail Create(
         CompetitionRegister firstCompetitionRegister,
         CompetitionRegister secondRedCompetitionRegister,
-        Competition competition,
+        CompetitionDetails competitionDetails,
         TableDetailStatus status)
     {
         var details = new CompetitionTableDetail
         {
             FirstCompetitionRegister = firstCompetitionRegister,
             SecondRedCompetitionRegister = secondRedCompetitionRegister,
-            Competition = competition,
-            CompetitionTableId = competition.Id,
+            CompetitionDetails = competitionDetails,
+            CompetitionTableId = competitionDetails.Id,
             FirstCompetitionRegisterId = firstCompetitionRegister.Id,
             SecondRedCompetitionRegisterId = secondRedCompetitionRegister.Id,
             Status = status

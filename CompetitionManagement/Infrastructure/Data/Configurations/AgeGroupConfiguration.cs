@@ -28,7 +28,7 @@ public class AgeGroupConfiguration : IEntityTypeConfiguration<AgeGroup>
             .IsRequired()
             .HasColumnType("jsonb");
 
-        builder.HasOne(ag => ag.CompetitionDefinition)
+        builder.HasOne(ag => ag.Competition)
             .WithMany(cd => cd.AgeGroups)
             .HasForeignKey(ag => ag.CompetitionDefinitionId)
             .OnDelete(DeleteBehavior.Restrict);

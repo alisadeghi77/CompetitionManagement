@@ -31,9 +31,6 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
         builder.Property(u => u.BirthDate)
             .IsRequired();
 
-        builder.Property(u => u.IsCitizens)
-            .IsRequired();
-
         builder.Property(u => u.Type)
             .IsRequired();
     }
