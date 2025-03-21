@@ -15,11 +15,5 @@ public class CompetitionRegisterValidator : AbstractValidator<CompetitionRegiste
 
         RuleFor(x => x.Status)
             .IsInEnum().WithMessage("وضعیت ثبت نام معتبر نیست.");
-
-        RuleFor(x => x.Weight)
-            .GreaterThan(0).WithMessage("وزن الزامی است.");
-
-        RuleFor(x => x.Style)
-            .NotEmpty().WithMessage("سبک‌ الزامی هستند.");
     }
 }

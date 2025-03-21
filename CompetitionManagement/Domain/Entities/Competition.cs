@@ -1,4 +1,6 @@
-﻿using CompetitionManagement.Domain.Common;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using CompetitionManagement.Domain.Common;
+using CompetitionManagement.Domain.Enums;
 using CompetitionManagement.Domain.Validations;
 using FluentValidation;
 
@@ -16,7 +18,9 @@ public class Competition : BaseAuditableEntity
     public long BannerImageId { get; private set; }
     public long LicenseImageId { get; private set; }
 
-    public virtual List<AgeGroup> AgeGroups { get; set; } = new();
+    
+    [Column("RegisterParams", TypeName = "jsonb")]
+    public List<CompetitionParam>? RegisterParams { get; private set; } = new();
 
     public static Competition Create(
         ApplicationUser plannerUser,
@@ -35,15 +39,24 @@ public class Competition : BaseAuditableEntity
             Date = date,
             BannerImageId = bannerImageId,
             LicenseImageId = licenseImageId,
-            Status = CompetitionStatus.PendingToVerify
+            Status = CompetitionStatus.PendToStart
         };
 
         new CompetitionValidator().ValidateAndThrow(competition);
         return competition;
     }
+}
 
-    public void Verify()
-    {
-        Status = CompetitionStatus.PendToStart;
-    }
+public record CompetitionParam
+{
+    public required string Key { get; set; }
+    public required string Title { get; set; }
+    public List<CompetitionParamValue>? Values { get; set; }
+}
+
+public record CompetitionParamValue
+{
+    public required string Key { get; set; }
+    public required string Title { get; set; }
+    public List<CompetitionParam>? Params { get; set; }
 }

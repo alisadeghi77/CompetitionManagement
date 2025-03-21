@@ -13,11 +13,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         AppContext.SetSwitch("xNpgsql.DisableDateTimeInfinityConversions", true);
     }
 
-    public DbSet<AgeGroup> AgeGroups => Set<AgeGroup>();
     public DbSet<Competition> Competitions => Set<Competition>();
     public DbSet<CompetitionRegister> CompetitionRegisters => Set<CompetitionRegister>();
-    public DbSet<CompetitionDetails> CompetitionTables => Set<CompetitionDetails>();
-    public DbSet<CompetitionTableDetail> CompetitionTableDetails => Set<CompetitionTableDetail>();
+    public DbSet<CompetitionTable> CompetitionTables => Set<CompetitionTable>();
     public DbSet<FileEntity> Files => Set<FileEntity>();
 
     protected override void OnModelCreating(ModelBuilder builder)

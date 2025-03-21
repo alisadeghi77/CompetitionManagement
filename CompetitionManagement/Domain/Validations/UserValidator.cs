@@ -23,11 +23,7 @@ public class UserValidator : AbstractValidator<ApplicationUser>
         RuleFor(x => x.LastName)
             .NotEmpty().WithMessage("نام خانوادگی الزامی است.")
             .MaximumLength(100).WithMessage("نام خانوادگی نمی‌تواند بیشتر از ۱۰۰ کاراکتر باشد.");
-
-        RuleFor(x => x.NationalId)
-            .NotEmpty().WithMessage("کد ملی الزامی است.")
-            .Length(10).WithMessage("کد ملی باید ۱۰ رقم باشد.");
-
+        
         RuleFor(x => x.BirthDate)
             .LessThan(DateTime.Now).WithMessage("تاریخ تولد باید قبل از تاریخ فعلی باشد.");
     }

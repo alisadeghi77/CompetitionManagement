@@ -1,4 +1,5 @@
-﻿using CompetitionManagement.Domain.Entities;
+﻿using System.Text.Json;
+using CompetitionManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -21,12 +22,6 @@ public class CompetitionRegisterConfiguration : IEntityTypeConfiguration<Competi
         builder.Property(cr => cr.Status)
             .IsRequired();
 
-        builder.Property(cr => cr.Weight)
-            .IsRequired();
-
-        builder.Property(cr => cr.Style)
-            .IsRequired();
-
         builder.HasOne(x => x.AthleteUser)
             .WithMany()
             .HasForeignKey(x => x.AthleteUserId)
@@ -39,10 +34,11 @@ public class CompetitionRegisterConfiguration : IEntityTypeConfiguration<Competi
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired(false);
         
-        builder.HasOne(x => x.AgeGroup)
-            .WithMany()
-            .HasForeignKey(x => x.AgeGroupId)
-            .OnDelete(DeleteBehavior.Restrict)
-            .IsRequired();
+        builder.Property(c => c.RegisterParams)
+            .HasColumnType("jsonb")
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                v => JsonSerializer.Deserialize<List<CompetitionRegisterParam>>(v, (JsonSerializerOptions)null));
+
     }
 }

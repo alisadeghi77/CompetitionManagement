@@ -29,9 +29,7 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
             .HasMaxLength(10);
 
         builder.Property(u => u.BirthDate)
-            .IsRequired();
-
-        builder.Property(u => u.Type)
-            .IsRequired();
+            .IsRequired(false);
+        
     }
 }

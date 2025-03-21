@@ -1,8 +1,7 @@
-﻿namespace CompetitionManagement.Domain.Entities;
+﻿namespace CompetitionManagement.Domain.Enums;
 
 public enum CompetitionStatus
 {
-    PendingToVerify,
     PendToStart,
     Start,
     End

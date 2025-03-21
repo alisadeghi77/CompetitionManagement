@@ -1,38 +1,39 @@
-﻿using CompetitionManagement.Domain.Common;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using CompetitionManagement.Domain.Common;
 using CompetitionManagement.Domain.Enums;
 using CompetitionManagement.Domain.Validations;
 using FluentValidation;
 
 namespace CompetitionManagement.Domain.Entities;
 
-public class CompetitionTableDetail : BaseAuditableEntity
+public class CompetitionTable : BaseAuditableEntity
 {
-    public long CompetitionTableId { get; private set; }
-    public required CompetitionDetails CompetitionDetails { get; set; }
-
+    [Column("RegisterParams", TypeName = "jsonb")]
+    public List<CompetitionRegisterParam>? RegisterParams { get; private set; } = new();
+    
     public long FirstCompetitionRegisterId { get; private set; }
     public required CompetitionRegister FirstCompetitionRegister { get; set; }
 
-    public long SecondRedCompetitionRegisterId { get; private set; }
-    public required CompetitionRegister SecondRedCompetitionRegister { get; set; }
+    public long SecondCompetitionRegisterId { get; private set; }
+    public required CompetitionRegister SecondCompetitionRegister { get; set; }
 
     public TableDetailStatus Status { get; private set; }
 
 
-    public static CompetitionTableDetail Create(
+    public static CompetitionTable Create(
         CompetitionRegister firstCompetitionRegister,
         CompetitionRegister secondRedCompetitionRegister,
-        CompetitionDetails competitionDetails,
+        List<CompetitionRegisterParam> registerParams,
         TableDetailStatus status)
     {
-        var details = new CompetitionTableDetail
+        var details = new CompetitionTable
         {
+            
             FirstCompetitionRegister = firstCompetitionRegister,
-            SecondRedCompetitionRegister = secondRedCompetitionRegister,
-            CompetitionDetails = competitionDetails,
-            CompetitionTableId = competitionDetails.Id,
+            SecondCompetitionRegister = secondRedCompetitionRegister,
             FirstCompetitionRegisterId = firstCompetitionRegister.Id,
-            SecondRedCompetitionRegisterId = secondRedCompetitionRegister.Id,
+            SecondCompetitionRegisterId = secondRedCompetitionRegister.Id,
+            RegisterParams = registerParams,
             Status = status
         };
 

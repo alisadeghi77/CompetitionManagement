@@ -1,57 +1,38 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace CompetitionManagement.Application.Services;
 
-public interface ITokenServices
+public interface ITokenService
 {
-    Task<TokenDto?> GenerateToken(string plannerUserId, long competitionId, TokenType type);
-    TokenDto? ValidateToken(string token, string otpCode);
+    string GenerateToken(IEnumerable<Claim> claims);
 }
 
-public class TokenServices(IMemoryCache memoryCache) : ITokenServices
+public class TokenService : ITokenService
 {
-    public async Task<TokenDto?> GenerateToken(string plannerUserId, long competitionId, TokenType type)
-    {
-        var key = $"{plannerUserId}-{competitionId}";
+    private readonly IConfiguration _configuration;
 
-        return await memoryCache.GetOrCreateAsync<TokenDto>(key,
-                   f =>
-                   {
-                       f.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                       return Task.FromResult(new TokenDto(key, 
-                           plannerUserId,
-                           competitionId,
-                           new Random().Next(1000, 9999).ToString(), 
-                           type));
-                   }) ??
-               throw new Exception("Generate token throw exception");
+    public TokenService(IConfiguration configuration)
+    {
+        _configuration = configuration;
     }
 
-    public TokenDto? ValidateToken(string token, string otpCode)
+    public string GenerateToken(IEnumerable<Claim> claims)
     {
-        try
-        {
-            var tokenDto = memoryCache.Get<TokenDto>(token);
-            if (tokenDto is not null && tokenDto.OtpCode == otpCode)
-            {
-                memoryCache.Remove(token);
-                return tokenDto;
-            }
+        var jwtSettings = _configuration.GetSection("Jwt");
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            return null;
-        }
-        catch
-        {
-            return null;
-        }
+        var token = new JwtSecurityToken(
+            issuer: jwtSettings["Issuer"],
+            audience: jwtSettings["Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["ExpiryInMinutes"])),
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
-}
-
-public record TokenDto(string Token, string PlannerUserId, long CompetitionId, string OtpCode, TokenType Type);
-
-public enum TokenType
-{
-    CompetitionDefinition,
-    CompetitionRegister
 }

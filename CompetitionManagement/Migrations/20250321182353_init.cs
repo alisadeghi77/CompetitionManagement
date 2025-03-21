@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using CompetitionManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -50,12 +52,10 @@ namespace CompetitionManagement.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false),
                     FirstName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     LastName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    BirthDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     NationalId = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
-                    IsCitizens = table.Column<bool>(type: "boolean", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -192,8 +192,10 @@ namespace CompetitionManagement.Migrations
                     Title = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Address = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     BannerImageId = table.Column<long>(type: "bigint", nullable: false),
-                    CertificateImageId = table.Column<long>(type: "bigint", nullable: false),
+                    LicenseImageId = table.Column<long>(type: "bigint", nullable: false),
+                    RegisterParams = table.Column<string>(type: "jsonb", nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -211,32 +213,6 @@ namespace CompetitionManagement.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AgeGroups",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CompetitionDefinitionId = table.Column<long>(type: "bigint", nullable: false),
-                    Title = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Weights = table.Column<string>(type: "jsonb", nullable: false),
-                    Styles = table.Column<string>(type: "jsonb", nullable: false),
-                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: true),
-                    LastModified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AgeGroups", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AgeGroups_CompetitionDefinitions_CompetitionDefinitionId",
-                        column: x => x.CompetitionDefinitionId,
-                        principalTable: "CompetitionDefinitions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CompetitionRegisters",
                 columns: table => new
                 {
@@ -246,9 +222,7 @@ namespace CompetitionManagement.Migrations
                     CoachPhoneNumber = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     CoachUserId = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false),
-                    AgeGroupId = table.Column<long>(type: "bigint", nullable: false),
-                    Weight = table.Column<int>(type: "integer", nullable: false),
-                    Style = table.Column<string>(type: "text", nullable: false),
+                    RegisterParams = table.Column<string>(type: "jsonb", nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -257,12 +231,6 @@ namespace CompetitionManagement.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CompetitionRegisters", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CompetitionRegisters_AgeGroups_AgeGroupId",
-                        column: x => x.AgeGroupId,
-                        principalTable: "AgeGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_CompetitionRegisters_Users_AthleteUserId",
                         column: x => x.AthleteUserId,
@@ -278,46 +246,14 @@ namespace CompetitionManagement.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompetitionTables",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CompetitionDefinitionId = table.Column<long>(type: "bigint", nullable: false),
-                    AgeGroupId = table.Column<long>(type: "bigint", nullable: false),
-                    Weight = table.Column<int>(type: "integer", nullable: false),
-                    Style = table.Column<string>(type: "text", nullable: false),
-                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: true),
-                    LastModified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CompetitionTables", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CompetitionTables_AgeGroups_AgeGroupId",
-                        column: x => x.AgeGroupId,
-                        principalTable: "AgeGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CompetitionTables_CompetitionDefinitions_CompetitionDefinit~",
-                        column: x => x.CompetitionDefinitionId,
-                        principalTable: "CompetitionDefinitions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CompetitionTableDetails",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CompetitionTableId = table.Column<long>(type: "bigint", nullable: false),
+                    RegisterParams = table.Column<List<CompetitionRegisterParam>>(type: "jsonb", nullable: true),
                     FirstCompetitionRegisterId = table.Column<long>(type: "bigint", nullable: false),
-                    SecondRedCompetitionRegisterId = table.Column<long>(type: "bigint", nullable: false),
+                    SecondCompetitionRegisterId = table.Column<long>(type: "bigint", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
@@ -334,23 +270,12 @@ namespace CompetitionManagement.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CompetitionTableDetails_CompetitionRegisters_SecondRedCompe~",
-                        column: x => x.SecondRedCompetitionRegisterId,
+                        name: "FK_CompetitionTableDetails_CompetitionRegisters_SecondCompetit~",
+                        column: x => x.SecondCompetitionRegisterId,
                         principalTable: "CompetitionRegisters",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CompetitionTableDetails_CompetitionTables_CompetitionTableId",
-                        column: x => x.CompetitionTableId,
-                        principalTable: "CompetitionTables",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AgeGroups_CompetitionDefinitionId",
-                table: "AgeGroups",
-                column: "CompetitionDefinitionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -384,11 +309,6 @@ namespace CompetitionManagement.Migrations
                 column: "PlannerUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetitionRegisters_AgeGroupId",
-                table: "CompetitionRegisters",
-                column: "AgeGroupId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CompetitionRegisters_AthleteUserId",
                 table: "CompetitionRegisters",
                 column: "AthleteUserId");
@@ -399,29 +319,14 @@ namespace CompetitionManagement.Migrations
                 column: "CoachUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetitionTableDetails_CompetitionTableId",
-                table: "CompetitionTableDetails",
-                column: "CompetitionTableId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CompetitionTableDetails_FirstCompetitionRegisterId",
                 table: "CompetitionTableDetails",
                 column: "FirstCompetitionRegisterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetitionTableDetails_SecondRedCompetitionRegisterId",
+                name: "IX_CompetitionTableDetails_SecondCompetitionRegisterId",
                 table: "CompetitionTableDetails",
-                column: "SecondRedCompetitionRegisterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompetitionTables_AgeGroupId",
-                table: "CompetitionTables",
-                column: "AgeGroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompetitionTables_CompetitionDefinitionId",
-                table: "CompetitionTables",
-                column: "CompetitionDefinitionId");
+                column: "SecondCompetitionRegisterId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -454,6 +359,9 @@ namespace CompetitionManagement.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CompetitionDefinitions");
+
+            migrationBuilder.DropTable(
                 name: "CompetitionTableDetails");
 
             migrationBuilder.DropTable(
@@ -464,15 +372,6 @@ namespace CompetitionManagement.Migrations
 
             migrationBuilder.DropTable(
                 name: "CompetitionRegisters");
-
-            migrationBuilder.DropTable(
-                name: "CompetitionTables");
-
-            migrationBuilder.DropTable(
-                name: "AgeGroups");
-
-            migrationBuilder.DropTable(
-                name: "CompetitionDefinitions");
 
             migrationBuilder.DropTable(
                 name: "Users");

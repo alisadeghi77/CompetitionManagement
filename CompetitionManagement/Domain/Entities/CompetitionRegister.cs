@@ -1,4 +1,5 @@
-﻿using CompetitionManagement.Domain.Common;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using CompetitionManagement.Domain.Common;
 using CompetitionManagement.Domain.Enums;
 using CompetitionManagement.Domain.Validations;
 using FluentValidation;
@@ -19,39 +20,36 @@ public class CompetitionRegister : BaseAuditableEntity
 
     public RegisterStatus Status { get; private set; }
     
-    public long AgeGroupId { get; private set; }
     
-    public required AgeGroup AgeGroup { get; set; }
-    
-    public int Weight { get; private set; }
-    
-    public required string Style { get; set; }
-
+    [Column("RegisterParams", TypeName = "jsonb")]
+    public List<CompetitionRegisterParam>? RegisterParams { get; private set; } = new();
 
     public static CompetitionRegister Create(
         ApplicationUser athleteUser,
         ApplicationUser coachUser,
         string coachPhoneNumber,
         RegisterStatus status,
-        AgeGroup ageGroup,
         int weight,
         string styles)
     {
         var register = new CompetitionRegister
         {
-            Style = styles,
             AthleteUser = athleteUser,
             AthleteUserId = athleteUser.Id,
             CoachPhoneNumber = coachPhoneNumber,
-            AgeGroup = ageGroup,
-            AgeGroupId = ageGroup.Id,
             CoachUserId = coachUser.Id,
             CoachUser = coachUser,
             Status = status,
-            Weight = weight,
         };
 
         new CompetitionRegisterValidator().ValidateAndThrow(register);
         return register;
     }
+}
+
+
+public record CompetitionRegisterParam
+{
+    public required string Key { get; set; }
+    public required string Value { get; set; }
 }

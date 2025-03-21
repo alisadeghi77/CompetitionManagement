@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CompetitionManagement.Infrastructure.Data.Configurations;
 
-public class CompetitionTableDetailsConfiguration : IEntityTypeConfiguration<CompetitionTableDetail>
+public class CompetitionTableDetailsConfiguration : IEntityTypeConfiguration<CompetitionTable>
 {
-    public void Configure(EntityTypeBuilder<CompetitionTableDetail> builder)
+    public void Configure(EntityTypeBuilder<CompetitionTable> builder)
     {
         builder.ToTable("CompetitionTableDetails");
 
@@ -14,33 +14,24 @@ public class CompetitionTableDetailsConfiguration : IEntityTypeConfiguration<Com
         
         builder.Property(ctd => ctd.Id).ValueGeneratedOnAdd();
 
-        builder.Property(ctd => ctd.CompetitionTableId)
-            .IsRequired();
-
         builder.Property(ctd => ctd.FirstCompetitionRegisterId)
             .IsRequired();
 
-        builder.Property(ctd => ctd.SecondRedCompetitionRegisterId)
+        builder.Property(ctd => ctd.SecondCompetitionRegisterId)
             .IsRequired();
 
         builder.Property(ctd => ctd.Status)
             .IsRequired();
           
-        builder.HasOne(x => x.CompetitionDetails)
-            .WithMany(x => x.CompetitionTableDetails)
-            .HasForeignKey(x => x.CompetitionTableId)
-            .OnDelete(DeleteBehavior.Restrict)
-            .IsRequired();
-        
         builder.HasOne(x => x.FirstCompetitionRegister)
             .WithMany()
             .HasForeignKey(x => x.FirstCompetitionRegisterId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
         
-        builder.HasOne(x => x.SecondRedCompetitionRegister)
+        builder.HasOne(x => x.SecondCompetitionRegister)
             .WithMany()
-            .HasForeignKey(x => x.SecondRedCompetitionRegisterId)
+            .HasForeignKey(x => x.SecondCompetitionRegisterId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
     }

@@ -1,4 +1,5 @@
-﻿using CompetitionManagement.Domain.Entities;
+﻿using System.Text.Json;
+using CompetitionManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,6 +12,12 @@ public class CompetitionDefinitionConfiguration : IEntityTypeConfiguration<Compe
         builder.ToTable("CompetitionDefinitions");
 
         builder.HasKey(c => c.Id);
+        
+        builder.Property(c => c.RegisterParams)
+            .HasColumnType("jsonb")
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                v => JsonSerializer.Deserialize<List<CompetitionParam>>(v, (JsonSerializerOptions)null));
         
         builder.Property(c => c.Id).ValueGeneratedOnAdd();
 

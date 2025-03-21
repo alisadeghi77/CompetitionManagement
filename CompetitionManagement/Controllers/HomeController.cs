@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CompetitionManagement.Controllers;
+namespace CompetitionManagement.WebApi.Controllers;
 
 [Authorize]
 [ApiController]
