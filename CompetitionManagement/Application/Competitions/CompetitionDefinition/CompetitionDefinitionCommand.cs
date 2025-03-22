@@ -23,12 +23,12 @@ public class CompetitionDefinitionCommandHandler(
     public async Task<long> Handle(CompetitionDefinitionCommand command,
         CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByIdAsync(command.UserId);
-        if (user is null)
+        var plannerUser = await userManager.FindByIdAsync(command.UserId);
+        if (plannerUser is null)
             throw new Exception("کاربر یافت نشد");
 
         var competition = Competition.Create(
-            user,
+            plannerUser,
             command.CompetitionTitle,
             command.CompetitionDate,
             command.CompetitionAddress,

@@ -8,11 +8,15 @@ namespace CompetitionManagement.Domain.Entities;
 
 public class CompetitionRegister : BaseAuditableEntity
 {
-    public required string AthleteUserId { get; set; }
+    
+    public long CompetitionId { get; set; }
+    public required Competition Competition { get; set; }
+    
+    public required string PlayerUserId { get; set; }
 
-    public required ApplicationUser AthleteUser { get; set; }
+    public required ApplicationUser PlayerUser { get; set; }
 
-    public required string CoachPhoneNumber { get; set; }
+    public string? CoachPhoneNumber { get; set; }
     
     public string? CoachUserId { get; private set; }
     
@@ -25,24 +29,26 @@ public class CompetitionRegister : BaseAuditableEntity
     public List<CompetitionRegisterParam>? RegisterParams { get; private set; } = new();
 
     public static CompetitionRegister Create(
-        ApplicationUser athleteUser,
+        Competition competition,
+        ApplicationUser playerUser,
         ApplicationUser coachUser,
-        string coachPhoneNumber,
-        RegisterStatus status,
-        int weight,
-        string styles)
+        string? coachPhoneNumber,
+        IEnumerable<CompetitionRegisterParam> registerParams)
     {
         var register = new CompetitionRegister
         {
-            AthleteUser = athleteUser,
-            AthleteUserId = athleteUser.Id,
+            Competition = competition,
+            CompetitionId = competition.Id,
+            PlayerUser = playerUser,
+            PlayerUserId = playerUser.Id,
             CoachPhoneNumber = coachPhoneNumber,
             CoachUserId = coachUser.Id,
             CoachUser = coachUser,
-            Status = status,
+            Status = RegisterStatus.Pending,
         };
 
         new CompetitionRegisterValidator().ValidateAndThrow(register);
+        
         return register;
     }
 }

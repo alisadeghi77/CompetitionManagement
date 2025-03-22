@@ -7,10 +7,10 @@ public class CompetitionTableDetailsValidator : AbstractValidator<CompetitionTab
 {
     public CompetitionTableDetailsValidator()
     {
-        RuleFor(x => x.FirstCompetitionRegisterId)
+        RuleFor(x => x.FirstPlayerRegisterId)
             .GreaterThan(0).WithMessage("شناسه ثبت‌نام اول الزامی است.");
 
-        RuleFor(x => x.SecondCompetitionRegisterId)
+        RuleFor(x => x.SecondPlayerRegisterId)
             .GreaterThan(0).WithMessage("شناسه ثبت‌نام دوم الزامی است.");
 
         RuleFor(x => x.Status)

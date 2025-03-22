@@ -14,24 +14,24 @@ public class CompetitionTableDetailsConfiguration : IEntityTypeConfiguration<Com
         
         builder.Property(ctd => ctd.Id).ValueGeneratedOnAdd();
 
-        builder.Property(ctd => ctd.FirstCompetitionRegisterId)
+        builder.Property(ctd => ctd.FirstPlayerRegisterId)
             .IsRequired();
 
-        builder.Property(ctd => ctd.SecondCompetitionRegisterId)
+        builder.Property(ctd => ctd.SecondPlayerRegisterId)
             .IsRequired();
 
         builder.Property(ctd => ctd.Status)
             .IsRequired();
           
-        builder.HasOne(x => x.FirstCompetitionRegister)
+        builder.HasOne(x => x.FirstPlayerRegister)
             .WithMany()
-            .HasForeignKey(x => x.FirstCompetitionRegisterId)
+            .HasForeignKey(x => x.FirstPlayerRegisterId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
         
-        builder.HasOne(x => x.SecondCompetitionRegister)
+        builder.HasOne(x => x.SecondPlayerRegister)
             .WithMany()
-            .HasForeignKey(x => x.SecondCompetitionRegisterId)
+            .HasForeignKey(x => x.SecondPlayerRegisterId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
     }

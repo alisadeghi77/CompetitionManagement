@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace CompetitionManagement.Application.Auth.CurrentUser;
 
-
 //TODO: change result to dto
 public record GetCurrentUserQuery(ClaimsPrincipal User) : IRequest<ApplicationUser?>;
 

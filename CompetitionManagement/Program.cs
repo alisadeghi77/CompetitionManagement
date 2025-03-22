@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using CompetitionManagement.WebApi.Middleware;
 
 namespace CompetitionManagement;
 
@@ -107,19 +108,19 @@ public class Program
 
         var app = builder.Build();
 
+        app.UseMiddleware<ResponseHandlerMiddleware>();
+
         using var scope = app.Services.CreateScope();
         SeedService.Initialize(scope.ServiceProvider).Wait();
-
 
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); });
         }
-
-
-        // app.UseHttpsRedirection();
+        
         app.UseAuthentication();
+        
         app.UseAuthorization();
 
         app.MapControllers();

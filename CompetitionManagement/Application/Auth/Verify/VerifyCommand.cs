@@ -1,12 +1,10 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using CompetitionManagement.Application.Auth.Login;
 using CompetitionManagement.Application.Services;
 using CompetitionManagement.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CompetitionManagement.Application.Auth.VerifyCommand;
 

@@ -1,7 +1,5 @@
-﻿using CompetitionManagement.Domain.Entities;
-using CompetitionManagement.Infrastructure.Data;
+﻿using CompetitionManagement.Infrastructure.Data;
 using CompetitionManagement.Infrastructure.Data.Interceptors;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -25,16 +23,7 @@ public static class DependencyInjection
 
 
         services.AddScoped<ApplicationDbContextInitialiser>();
-
-        // services
-            // .AddDefaultIdentity<ApplicationUser>()
-            // .AddRoles<IdentityRole>()
-            // .AddEntityFrameworkStores<ApplicationDbContext>();
-
-        services.AddSingleton(TimeProvider.System);
-        // services.AddAuthorization(options =>
-        //     options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
-
+        
         return services;
     }
 }

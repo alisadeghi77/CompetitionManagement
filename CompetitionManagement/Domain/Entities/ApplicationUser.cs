@@ -20,7 +20,8 @@ public class ApplicationUser : IdentityUser
     public DateTime? BirthDate { get; set; }
     public string? NationalId { get; private set; }
 
-    public virtual List<Competition> CompetitionDefinitions { get; set; } = new();
+    public List<Competition> CompetitionDefinitions { get; set; } = new();
+    public List<IdentityRole> Roles { get; set; } = new();
 
 
     [NotMapped]

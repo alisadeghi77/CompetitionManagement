@@ -41,6 +41,18 @@ public class AuthController : ControllerBase
             RoleConstant.Planner));
         return Ok();
     }
+    
+    [HttpPost("register-player")]
+    [AllowAnonymous]
+    public async Task<IActionResult> RegisterPlayer([FromBody] RegisterRequest request)
+    {
+        await _mediator.Send(new RegisterCommand(
+            request.PhoneNumber,
+            request.FirstName,
+            request.LastName,
+            RoleConstant.Player));
+        return Ok();
+    }
 
     [HttpPost("verify")]
     [AllowAnonymous]

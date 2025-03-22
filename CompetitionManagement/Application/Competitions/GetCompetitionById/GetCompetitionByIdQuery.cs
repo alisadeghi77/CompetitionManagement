@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CompetitionManagement.Application.Competitions.GetCompetitionById;
 
-public record GetCompetitionByIdRequest(long Id) : IRequest<CompetitionDetailsDto?>;
+public record GetCompetitionByIdQuery(long Id) : IRequest<CompetitionDetailsDto?>;
 
-public class GetCompetitionByIdRequestHandler(ApplicationDbContext dbContext) :
-    IRequestHandler<GetCompetitionByIdRequest, CompetitionDetailsDto?>
+public class GetCompetitionByIdQueryHandler(ApplicationDbContext dbContext) :
+    IRequestHandler<GetCompetitionByIdQuery, CompetitionDetailsDto?>
 {
     public async Task<CompetitionDetailsDto?> Handle(
-        GetCompetitionByIdRequest request, CancellationToken cancellationToken) => await dbContext.Competitions
+        GetCompetitionByIdQuery query, CancellationToken cancellationToken) => await dbContext.Competitions
         .Select(s => new CompetitionDetailsDto(
             s.Id,
             s.Title,
@@ -20,5 +20,5 @@ public class GetCompetitionByIdRequestHandler(ApplicationDbContext dbContext) :
             s.LicenseImageId,
             s.Status,
             s.RegisterParams))
-        .FirstOrDefaultAsync(w => w.Id == request.Id, cancellationToken);
+        .FirstOrDefaultAsync(w => w.Id == query.Id, cancellationToken);
 }

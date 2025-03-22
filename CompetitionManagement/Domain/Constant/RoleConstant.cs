@@ -5,7 +5,7 @@ public static class RoleConstant
     public const string Admin = "ADMIN";
     public const string Planner = "PLANNER";
     public const string Coach = "COACH";
-    public const string Athlete = "ATHLETE";
+    public const string Player = "PLAYER";
 
     public static string GetRole(string roleName) =>
         roleName.ToUpper() switch
@@ -13,7 +13,7 @@ public static class RoleConstant
             "ADMIN" => Admin,
             "PLANNER" => Planner,
             "COACH" => Coach,
-            "ATHLETE" => Athlete,
+            "PLAYER" => Player,
             _ => ""
         };
 }

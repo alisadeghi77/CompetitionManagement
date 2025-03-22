@@ -7,7 +7,9 @@ public class CompetitionRegisterValidator : AbstractValidator<CompetitionRegiste
 {
     public CompetitionRegisterValidator()
     {
-        RuleFor(x => x.AthleteUserId)
+        //TODO: validate all params based on competitions
+        
+        RuleFor(x => x.PlayerUserId)
             .NotEmpty().NotNull().WithMessage("شناسه ورزشکار الزامی است.");
 
         RuleFor(x => x.CoachUserId)

@@ -12,7 +12,7 @@ public static class SeedService
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
         // Seed roles
-        string[] roleNames = [RoleConstant.Admin, RoleConstant.Planner, RoleConstant.Coach, RoleConstant.Athlete];
+        string[] roleNames = [RoleConstant.Admin, RoleConstant.Planner, RoleConstant.Coach, RoleConstant.Player];
         foreach (var roleName in roleNames)
             if (!await roleManager.RoleExistsAsync(roleName)) 
                 await roleManager.CreateAsync(new IdentityRole(roleName));

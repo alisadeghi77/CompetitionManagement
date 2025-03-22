@@ -31,5 +31,7 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
         builder.Property(u => u.BirthDate)
             .IsRequired(false);
         
+        builder.HasMany(c => c.Roles)
+            .WithMany();
     }
 }

@@ -22,9 +22,9 @@ public class CompetitionRegisterConfiguration : IEntityTypeConfiguration<Competi
         builder.Property(cr => cr.Status)
             .IsRequired();
 
-        builder.HasOne(x => x.AthleteUser)
+        builder.HasOne(x => x.PlayerUser)
             .WithMany()
-            .HasForeignKey(x => x.AthleteUserId)
+            .HasForeignKey(x => x.PlayerUserId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
             

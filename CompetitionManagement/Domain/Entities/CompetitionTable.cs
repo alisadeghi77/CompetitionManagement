@@ -11,11 +11,11 @@ public class CompetitionTable : BaseAuditableEntity
     [Column("RegisterParams", TypeName = "jsonb")]
     public List<CompetitionRegisterParam>? RegisterParams { get; private set; } = new();
     
-    public long FirstCompetitionRegisterId { get; private set; }
-    public required CompetitionRegister FirstCompetitionRegister { get; set; }
+    public long FirstPlayerRegisterId { get; private set; }
+    public required CompetitionRegister FirstPlayerRegister { get; set; }
 
-    public long SecondCompetitionRegisterId { get; private set; }
-    public required CompetitionRegister SecondCompetitionRegister { get; set; }
+    public long SecondPlayerRegisterId { get; private set; }
+    public required CompetitionRegister SecondPlayerRegister { get; set; }
 
     public TableDetailStatus Status { get; private set; }
 
@@ -29,10 +29,10 @@ public class CompetitionTable : BaseAuditableEntity
         var details = new CompetitionTable
         {
             
-            FirstCompetitionRegister = firstCompetitionRegister,
-            SecondCompetitionRegister = secondRedCompetitionRegister,
-            FirstCompetitionRegisterId = firstCompetitionRegister.Id,
-            SecondCompetitionRegisterId = secondRedCompetitionRegister.Id,
+            FirstPlayerRegister = firstCompetitionRegister,
+            SecondPlayerRegister = secondRedCompetitionRegister,
+            FirstPlayerRegisterId = firstCompetitionRegister.Id,
+            SecondPlayerRegisterId = secondRedCompetitionRegister.Id,
             RegisterParams = registerParams,
             Status = status
         };
