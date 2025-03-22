@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CompetitionManagement.Application.Competitions.GetCompetitionList;
 
-public record GetCompetitionListRequest : IRequest<List<CompetitionDto>>;
+public record GetCompetitionListQuery : IRequest<List<CompetitionDto>>;
 
-public class GetCompetitionListRequestHandler(ApplicationDbContext dbContext) :
-    IRequestHandler<GetCompetitionListRequest, List<CompetitionDto>>
+public class GetCompetitionListQueryHandler(ApplicationDbContext dbContext) :
+    IRequestHandler<GetCompetitionListQuery, List<CompetitionDto>>
 {
     public async Task<List<CompetitionDto>> Handle(
-        GetCompetitionListRequest request, CancellationToken cancellationToken) =>
+        GetCompetitionListQuery query, CancellationToken cancellationToken) =>
         await dbContext.Competitions
             .Select(s => new CompetitionDto(
                 s.Id,

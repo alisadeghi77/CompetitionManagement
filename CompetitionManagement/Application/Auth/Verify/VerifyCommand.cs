@@ -5,6 +5,7 @@ using CompetitionManagement.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
+using CompetitionManagement.Domain.Exceptions;
 
 namespace CompetitionManagement.Application.Auth.VerifyCommand;
 
@@ -21,14 +22,14 @@ public class VerifyCommandHandler(
         var cacheKey = $"OTP_{request.PhoneNumber}";
 
         if (!cache.TryGetValue(cacheKey, out string? cachedOtp))
-            throw new Exception("کد ارسال شده برای شما منقضی شده است، دوباره تلاش کنید");
+            throw new UnprocessableEntityException("کد ارسال شده برای شما منقضی شده است، دوباره تلاش کنید");
 
         if (cachedOtp != request.OtpCode)
-            throw new Exception("کد صحیح نمی باشد.");
+            throw new UnprocessableEntityException("کد صحیح نمی باشد.");
 
         var user = await userManager.FindByNameAsync(request.PhoneNumber);
         if (user == null)
-            throw new Exception("کاربر با این شماره موبایل یافت نشد.");
+            throw new UnprocessableEntityException("کابر یافت نشد.");
 
         cache.Remove(cacheKey);
 

@@ -1,6 +1,7 @@
 ﻿using CompetitionManagement.Domain.Constant;
 using CompetitionManagement.Domain.Entities;
 using CompetitionManagement.Domain.Enums;
+using CompetitionManagement.Domain.Exceptions;
 using CompetitionManagement.Infrastructure.Data;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -24,17 +25,18 @@ public class RegisterPLayerCommandHandler(
     {
         var playerUser = await userManager.FindByIdAsync(request.PlayerUserId);
         if (playerUser is null)
-            throw new Exception("کاربر یافت نشد");
+            throw new UnprocessableEntityException("کاربر یافت نشد");
 
         var coachUser = await GetOrCreateCoachId(request.CoachId, request.CoachPhoneNumber);
 
         var competition = await dbContext.Competitions
             .FirstOrDefaultAsync(w => w.Id == request.CompetitionId, cancellationToken);
+
         if (competition is null)
-            throw new Exception("مسابقه انتخاب شده یافت نشد.");
+            throw new UnprocessableEntityException("کاربر یافت نشد");
 
         if (competition.Status != CompetitionStatus.PendToStart)
-            throw new Exception("زمان ثبت نام مسابقه به پایان رسیده است.");
+            throw new UnprocessableEntityException("زمان ثبت نام مسابقه به پایان رسیده است.");
 
         var competitionRegister = CompetitionRegister.Create(
             competition,
@@ -74,7 +76,7 @@ public class RegisterPLayerCommandHandler(
             var createCoachResult = await userManager.CreateAsync(coachUser);
             if (!createCoachResult.Succeeded)
             {
-                var exception = new Exception("اطلاعات مربی ثبت نشده است.");
+                var exception = new UnprocessableEntityException("اطلاعات مربی ثبت نشده است.");
                 exception.Data.Add("Error", createCoachResult.Errors);
                 throw exception;
             }
@@ -82,7 +84,7 @@ public class RegisterPLayerCommandHandler(
             var assignCoachRoleResult = await userManager.AddToRoleAsync(coachUser, RoleConstant.Coach);
             if (!assignCoachRoleResult.Succeeded)
             {
-                var exception = new Exception("اطلاعات مربی ثبت نشده است.");
+                var exception = new UnprocessableEntityException("اطلاعات مربی ثبت نشده است.");
                 exception.Data.Add("Error", createCoachResult.Errors);
                 throw exception;
             }

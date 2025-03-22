@@ -1,5 +1,6 @@
 ﻿using CompetitionManagement.Application.Services;
 using CompetitionManagement.Domain.Entities;
+using CompetitionManagement.Domain.Exceptions;
 using CompetitionManagement.Infrastructure.Data;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -25,7 +26,7 @@ public class CompetitionDefinitionCommandHandler(
     {
         var plannerUser = await userManager.FindByIdAsync(command.UserId);
         if (plannerUser is null)
-            throw new Exception("کاربر یافت نشد");
+            throw new UnprocessableEntityException("کاربر یافت نشد");
 
         var competition = Competition.Create(
             plannerUser,

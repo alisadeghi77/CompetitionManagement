@@ -19,8 +19,8 @@ public class CompetitionController(ISender sender) : ControllerBase
 {
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> GetList([FromQuery] GetCompetitionListRequest request)
-        => Ok(await sender.Send(request));
+    public async Task<IActionResult> GetList([FromQuery] GetCompetitionListQuery query)
+        => Ok(await sender.Send(query));
 
 
     [HttpGet("{id}")]

@@ -1,5 +1,6 @@
 ﻿using CompetitionManagement.Application.Services;
 using CompetitionManagement.Domain.Entities;
+using CompetitionManagement.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
@@ -18,7 +19,7 @@ public class LoginCommandHandler(
     {
         var user = await userManager.FindByNameAsync(request.PhoneNumber);
         if (user is null)
-            throw new Exception("کاربر با این شماره موبایل یافت نشد");
+            throw new UnprocessableEntityException("کاربر با این شماره موبایل یافت نشد");
 
         var otp = new Random().Next(1000, 9999).ToString();
 

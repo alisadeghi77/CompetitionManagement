@@ -138,6 +138,7 @@ namespace CompetitionManagement.WebApi.Middleware
                 "RESOURCE_NOT_FOUND" => "یافت نشد",
                 "BAD_REQUEST" => "درخواست نامعتبر",
                 "VALIDATION_ERROR" => "خطای اعتبارسنجی",
+                "UNPROCESSABLE_ENTITY" => "اطلاعات اشتباه است",
                 "UNAUTHORIZED" => "عدم احراز هویت",
                 "FORBIDDEN" => "دسترسی غیرمجاز",
                 "CONFLICT" => "تداخل در داده‌ها",
