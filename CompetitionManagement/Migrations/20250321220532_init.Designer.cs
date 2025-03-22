@@ -14,7 +14,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CompetitionManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250321182353_init")]
+    [Migration("20250321220532_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -26,6 +26,21 @@ namespace CompetitionManagement.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("ApplicationUserIdentityRole", b =>
+                {
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RolesId")
+                        .HasColumnType("text");
+
+                    b.HasKey("ApplicationUserId", "RolesId");
+
+                    b.HasIndex("RolesId");
+
+                    b.ToTable("ApplicationUserIdentityRole");
+                });
 
             modelBuilder.Entity("CompetitionManagement.Domain.Entities.ApplicationUser", b =>
                 {
@@ -175,10 +190,6 @@ namespace CompetitionManagement.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("AthleteUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("CoachPhoneNumber")
                         .IsRequired()
                         .HasMaxLength(15)
@@ -186,6 +197,9 @@ namespace CompetitionManagement.Migrations
 
                     b.Property<string>("CoachUserId")
                         .HasColumnType("text");
+
+                    b.Property<long>("CompetitionId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
@@ -199,6 +213,10 @@ namespace CompetitionManagement.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
+                    b.Property<string>("PlayerUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("RegisterParams")
                         .HasColumnType("jsonb")
                         .HasColumnName("RegisterParams");
@@ -208,9 +226,11 @@ namespace CompetitionManagement.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AthleteUserId");
-
                     b.HasIndex("CoachUserId");
+
+                    b.HasIndex("CompetitionId");
+
+                    b.HasIndex("PlayerUserId");
 
                     b.ToTable("CompetitionRegisters", (string)null);
                 });
@@ -229,7 +249,7 @@ namespace CompetitionManagement.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
-                    b.Property<long>("FirstCompetitionRegisterId")
+                    b.Property<long>("FirstPlayerRegisterId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTimeOffset>("LastModified")
@@ -242,7 +262,7 @@ namespace CompetitionManagement.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("RegisterParams");
 
-                    b.Property<long>("SecondCompetitionRegisterId")
+                    b.Property<long>("SecondPlayerRegisterId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Status")
@@ -250,9 +270,9 @@ namespace CompetitionManagement.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FirstCompetitionRegisterId");
+                    b.HasIndex("FirstPlayerRegisterId");
 
-                    b.HasIndex("SecondCompetitionRegisterId");
+                    b.HasIndex("SecondPlayerRegisterId");
 
                     b.ToTable("CompetitionTableDetails", (string)null);
                 });
@@ -426,6 +446,21 @@ namespace CompetitionManagement.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ApplicationUserIdentityRole", b =>
+                {
+                    b.HasOne("CompetitionManagement.Domain.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("CompetitionManagement.Domain.Entities.Competition", b =>
                 {
                     b.HasOne("CompetitionManagement.Domain.Entities.ApplicationUser", "PlannerUser")
@@ -439,39 +474,47 @@ namespace CompetitionManagement.Migrations
 
             modelBuilder.Entity("CompetitionManagement.Domain.Entities.CompetitionRegister", b =>
                 {
-                    b.HasOne("CompetitionManagement.Domain.Entities.ApplicationUser", "AthleteUser")
-                        .WithMany()
-                        .HasForeignKey("AthleteUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("CompetitionManagement.Domain.Entities.ApplicationUser", "CoachUser")
                         .WithMany()
                         .HasForeignKey("CoachUserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("AthleteUser");
+                    b.HasOne("CompetitionManagement.Domain.Entities.Competition", "Competition")
+                        .WithMany("Players")
+                        .HasForeignKey("CompetitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CompetitionManagement.Domain.Entities.ApplicationUser", "PlayerUser")
+                        .WithMany()
+                        .HasForeignKey("PlayerUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("CoachUser");
+
+                    b.Navigation("Competition");
+
+                    b.Navigation("PlayerUser");
                 });
 
             modelBuilder.Entity("CompetitionManagement.Domain.Entities.CompetitionTable", b =>
                 {
-                    b.HasOne("CompetitionManagement.Domain.Entities.CompetitionRegister", "FirstCompetitionRegister")
+                    b.HasOne("CompetitionManagement.Domain.Entities.CompetitionRegister", "FirstPlayerRegister")
                         .WithMany()
-                        .HasForeignKey("FirstCompetitionRegisterId")
+                        .HasForeignKey("FirstPlayerRegisterId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("CompetitionManagement.Domain.Entities.CompetitionRegister", "SecondCompetitionRegister")
+                    b.HasOne("CompetitionManagement.Domain.Entities.CompetitionRegister", "SecondPlayerRegister")
                         .WithMany()
-                        .HasForeignKey("SecondCompetitionRegisterId")
+                        .HasForeignKey("SecondPlayerRegisterId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("FirstCompetitionRegister");
+                    b.Navigation("FirstPlayerRegister");
 
-                    b.Navigation("SecondCompetitionRegister");
+                    b.Navigation("SecondPlayerRegister");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -528,6 +571,11 @@ namespace CompetitionManagement.Migrations
             modelBuilder.Entity("CompetitionManagement.Domain.Entities.ApplicationUser", b =>
                 {
                     b.Navigation("CompetitionDefinitions");
+                });
+
+            modelBuilder.Entity("CompetitionManagement.Domain.Entities.Competition", b =>
+                {
+                    b.Navigation("Players");
                 });
 #pragma warning restore 612, 618
         }

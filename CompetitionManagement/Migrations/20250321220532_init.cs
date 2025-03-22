@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using CompetitionManagement.Domain.Entities;
+﻿using CompetitionManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -93,6 +91,30 @@ namespace CompetitionManagement.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApplicationUserIdentityRole",
+                columns: table => new
+                {
+                    ApplicationUserId = table.Column<string>(type: "text", nullable: false),
+                    RolesId = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationUserIdentityRole", x => new { x.ApplicationUserId, x.RolesId });
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserIdentityRole_AspNetRoles_RolesId",
+                        column: x => x.RolesId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserIdentityRole_Users_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -218,7 +240,8 @@ namespace CompetitionManagement.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AthleteUserId = table.Column<string>(type: "text", nullable: false),
+                    CompetitionId = table.Column<long>(type: "bigint", nullable: false),
+                    PlayerUserId = table.Column<string>(type: "text", nullable: false),
                     CoachPhoneNumber = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     CoachUserId = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false),
@@ -232,14 +255,20 @@ namespace CompetitionManagement.Migrations
                 {
                     table.PrimaryKey("PK_CompetitionRegisters", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CompetitionRegisters_Users_AthleteUserId",
-                        column: x => x.AthleteUserId,
+                        name: "FK_CompetitionRegisters_CompetitionDefinitions_CompetitionId",
+                        column: x => x.CompetitionId,
+                        principalTable: "CompetitionDefinitions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CompetitionRegisters_Users_CoachUserId",
+                        column: x => x.CoachUserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CompetitionRegisters_Users_CoachUserId",
-                        column: x => x.CoachUserId,
+                        name: "FK_CompetitionRegisters_Users_PlayerUserId",
+                        column: x => x.PlayerUserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -252,8 +281,8 @@ namespace CompetitionManagement.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     RegisterParams = table.Column<List<CompetitionRegisterParam>>(type: "jsonb", nullable: true),
-                    FirstCompetitionRegisterId = table.Column<long>(type: "bigint", nullable: false),
-                    SecondCompetitionRegisterId = table.Column<long>(type: "bigint", nullable: false),
+                    FirstPlayerRegisterId = table.Column<long>(type: "bigint", nullable: false),
+                    SecondPlayerRegisterId = table.Column<long>(type: "bigint", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
@@ -264,18 +293,23 @@ namespace CompetitionManagement.Migrations
                 {
                     table.PrimaryKey("PK_CompetitionTableDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CompetitionTableDetails_CompetitionRegisters_FirstCompetiti~",
-                        column: x => x.FirstCompetitionRegisterId,
+                        name: "FK_CompetitionTableDetails_CompetitionRegisters_FirstPlayerReg~",
+                        column: x => x.FirstPlayerRegisterId,
                         principalTable: "CompetitionRegisters",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CompetitionTableDetails_CompetitionRegisters_SecondCompetit~",
-                        column: x => x.SecondCompetitionRegisterId,
+                        name: "FK_CompetitionTableDetails_CompetitionRegisters_SecondPlayerRe~",
+                        column: x => x.SecondPlayerRegisterId,
                         principalTable: "CompetitionRegisters",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUserIdentityRole_RolesId",
+                table: "ApplicationUserIdentityRole",
+                column: "RolesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -309,24 +343,29 @@ namespace CompetitionManagement.Migrations
                 column: "PlannerUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetitionRegisters_AthleteUserId",
-                table: "CompetitionRegisters",
-                column: "AthleteUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CompetitionRegisters_CoachUserId",
                 table: "CompetitionRegisters",
                 column: "CoachUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetitionTableDetails_FirstCompetitionRegisterId",
-                table: "CompetitionTableDetails",
-                column: "FirstCompetitionRegisterId");
+                name: "IX_CompetitionRegisters_CompetitionId",
+                table: "CompetitionRegisters",
+                column: "CompetitionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetitionTableDetails_SecondCompetitionRegisterId",
+                name: "IX_CompetitionRegisters_PlayerUserId",
+                table: "CompetitionRegisters",
+                column: "PlayerUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompetitionTableDetails_FirstPlayerRegisterId",
                 table: "CompetitionTableDetails",
-                column: "SecondCompetitionRegisterId");
+                column: "FirstPlayerRegisterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompetitionTableDetails_SecondPlayerRegisterId",
+                table: "CompetitionTableDetails",
+                column: "SecondPlayerRegisterId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -344,6 +383,9 @@ namespace CompetitionManagement.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ApplicationUserIdentityRole");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -359,9 +401,6 @@ namespace CompetitionManagement.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CompetitionDefinitions");
-
-            migrationBuilder.DropTable(
                 name: "CompetitionTableDetails");
 
             migrationBuilder.DropTable(
@@ -372,6 +411,9 @@ namespace CompetitionManagement.Migrations
 
             migrationBuilder.DropTable(
                 name: "CompetitionRegisters");
+
+            migrationBuilder.DropTable(
+                name: "CompetitionDefinitions");
 
             migrationBuilder.DropTable(
                 name: "Users");
