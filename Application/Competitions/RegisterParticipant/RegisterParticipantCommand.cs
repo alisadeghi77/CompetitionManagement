@@ -1,4 +1,5 @@
 ﻿using Application.Common;
+using Application.Services;
 using Domain.Constant;
 using Domain.Entities;
 using Domain.Enums;
@@ -7,27 +8,28 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Competitions.RegisterPlayer;
+namespace Application.Competitions.RegisterParticipant;
 
-public record RegisterPLayerCommand(
-    string PlayerUserId,
+public record RegisterParticipantCommand(
+    string ParticipantUserId,
     string? CoachId,
     string? CoachPhoneNumber,
     long CompetitionId,
     List<(string Key, string Value)> Params) : IRequest<long>;
 
-public class RegisterPLayerCommandHandler(
+public class RegisterParticipantCommandHandler(
+    ISmsService smsService,
     IApplicationDbContext dbContext,
     UserManager<ApplicationUser> userManager) :
-    IRequestHandler<RegisterPLayerCommand, long>
+    IRequestHandler<RegisterParticipantCommand, long>
 {
-    public async Task<long> Handle(RegisterPLayerCommand request, CancellationToken cancellationToken)
+    public async Task<long> Handle(RegisterParticipantCommand request, CancellationToken cancellationToken)
     {
-        var playerUser = await userManager.FindByIdAsync(request.PlayerUserId);
-        if (playerUser is null)
+        var participantUser = await userManager.FindByIdAsync(request.ParticipantUserId);
+        if (participantUser is null)
             throw new UnprocessableEntityException("کاربر یافت نشد");
 
-        var coachUser = await GetOrCreateCoachId(request.CoachId, request.CoachPhoneNumber);
+        var coachUser = await GetOrCreateCoachUser(request.CoachId, request.CoachPhoneNumber);
 
         var competition = await dbContext.Competitions
             .FirstOrDefaultAsync(w => w.Id == request.CompetitionId, cancellationToken);
@@ -38,25 +40,25 @@ public class RegisterPLayerCommandHandler(
         if (competition.Status != CompetitionStatus.PendToStart)
             throw new UnprocessableEntityException("زمان ثبت نام مسابقه به پایان رسیده است.");
 
-        var competitionRegister = CompetitionRegister.Create(
+        var participant = Participant.Create(
             competition,
-            playerUser,
+            participantUser,
             coachUser,
             request.CoachPhoneNumber,
-            request.Params.Select(s => new CompetitionRegisterParam
+            request.Params.Select(s => new ParticipantParam
             {
                 Key = s.Key,
                 Value = s.Value
             }));
-        
-        dbContext.CompetitionRegisters.Add(competitionRegister);
+
+        dbContext.Participants.Add(participant);
 
         await dbContext.SaveChangesAsync(cancellationToken);
-        
-        return competitionRegister.Id;
+
+        return participant.Id;
     }
 
-    private async Task<ApplicationUser> GetOrCreateCoachId(string? coachId, string? coachPhoneNumber)
+    private async Task<ApplicationUser> GetOrCreateCoachUser(string? coachId, string? coachPhoneNumber)
     {
         if (!string.IsNullOrEmpty(coachId))
         {
@@ -88,6 +90,8 @@ public class RegisterPLayerCommandHandler(
                 exception.Data.Add("Error", createCoachResult.Errors);
                 throw exception;
             }
+
+            await smsService.SendCoachRegister(coachUser.PhoneNumber!);
 
             return coachUser;
         }

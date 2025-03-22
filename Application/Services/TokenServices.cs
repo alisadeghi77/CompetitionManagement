@@ -6,11 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Services;
 
-public interface ITokenService
-{
-    string GenerateToken(IEnumerable<Claim> claims);
-}
-
 public class TokenService : ITokenService
 {
     private readonly IConfiguration _configuration;

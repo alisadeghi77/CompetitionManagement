@@ -1,6 +1,8 @@
 ﻿using Application.Common;
+using Application.Services;
 using Infrastructure.Data;
 using Infrastructure.Data.Interceptors;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -14,9 +16,9 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
+        services.AddScoped<ISmsService, SmsService>();
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
-
         
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {

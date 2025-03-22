@@ -1,10 +1,8 @@
 ﻿using Api.ExtensionMethods;
 using Api.Models;
 using Application.Competitions.CompetitionDefinition;
-using Application.Competitions.GetCoaches;
 using Application.Competitions.GetCompetitionById;
 using Application.Competitions.GetCompetitionList;
-using Application.Competitions.RegisterPlayer;
 using Domain.Constant;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -42,30 +40,6 @@ public class CompetitionController(ISender sender) : ControllerBase
             request.CompetitionAddress,
             request.LicenseFileId ?? 0,
             request.BannerFileId ?? 0));
-
-        return Ok(result);
-    }
-    
-    
-    [HttpPost("register")]
-    [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Player}")]
-    public async Task<IActionResult> CompetitionDefinition(PlayerRegisterRequest request)
-    {
-        var result = await sender.Send(new RegisterPLayerCommand(
-            this.GetUserId()!,
-            request.CoachId,
-            request.CoachPhoneNumber,
-            request.CompetitionId,
-            request.Params));
-
-        return Ok(result);
-    }
-    
-    [HttpGet("coaches")]
-    [Authorize]
-    public async Task<IActionResult> GetCoaches([FromQuery] string phoneNumber)
-    {
-        var result = await sender.Send(new GetCoachesQuery(phoneNumber));
 
         return Ok(result);
     }

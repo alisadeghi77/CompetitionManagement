@@ -9,30 +9,30 @@ namespace Domain.Entities;
 public class CompetitionTable : BaseAuditableEntity
 {
     [Column("RegisterParams", TypeName = "jsonb")]
-    public List<CompetitionRegisterParam>? RegisterParams { get; private set; } = new();
+    public List<ParticipantParam>? RegisterParams { get; private set; } = new();
     
-    public long FirstPlayerRegisterId { get; private set; }
-    public required CompetitionRegister FirstPlayerRegister { get; set; }
+    public long FirstParticipantId { get; private set; }
+    public required Participant FirstParticipant { get; set; }
 
-    public long SecondPlayerRegisterId { get; private set; }
-    public required CompetitionRegister SecondPlayerRegister { get; set; }
+    public long SecondParticipantId { get; private set; }
+    public required Participant SecondParticipant { get; set; }
 
     public TableDetailStatus Status { get; private set; }
 
 
     public static CompetitionTable Create(
-        CompetitionRegister firstCompetitionRegister,
-        CompetitionRegister secondRedCompetitionRegister,
-        List<CompetitionRegisterParam> registerParams,
+        Participant firstParticipant,
+        Participant secondRedParticipant,
+        List<ParticipantParam> registerParams,
         TableDetailStatus status)
     {
         var details = new CompetitionTable
         {
             
-            FirstPlayerRegister = firstCompetitionRegister,
-            SecondPlayerRegister = secondRedCompetitionRegister,
-            FirstPlayerRegisterId = firstCompetitionRegister.Id,
-            SecondPlayerRegisterId = secondRedCompetitionRegister.Id,
+            FirstParticipant = firstParticipant,
+            SecondParticipant = secondRedParticipant,
+            FirstParticipantId = firstParticipant.Id,
+            SecondParticipantId = secondRedParticipant.Id,
             RegisterParams = registerParams,
             Status = status
         };

@@ -3,14 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
 
-public static class RegisterServices
+public static class DependencyInjection
 {
     public static IServiceCollection RegisterApplication(this IServiceCollection services)
     {
         services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<ISmsService, SmsService>();
         
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(RegisterServices).Assembly));
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
         return services;
     }
 }

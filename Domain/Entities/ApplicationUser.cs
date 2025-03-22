@@ -41,4 +41,11 @@ public class ApplicationUser : IdentityUser
         new UserValidator().ValidateAndThrow(user);
         return user;
     }
+
+    public void UpdateInfo(string firstName, string lastName, DateTime birthDate)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        BirthDate = birthDate;
+    }
 }

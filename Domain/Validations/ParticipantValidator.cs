@@ -3,13 +3,13 @@ using FluentValidation;
 
 namespace Domain.Validations;
 
-public class CompetitionRegisterValidator : AbstractValidator<CompetitionRegister>
+public class ParticipantValidator : AbstractValidator<Participant>
 {
-    public CompetitionRegisterValidator()
+    public ParticipantValidator()
     {
         //TODO: validate all params based on competitions
         
-        RuleFor(x => x.PlayerUserId)
+        RuleFor(x => x.ParticipantUserId)
             .NotEmpty().NotNull().WithMessage("شناسه ورزشکار الزامی است.");
 
         RuleFor(x => x.CoachUserId)

@@ -7,7 +7,7 @@ public interface IApplicationDbContext
 {
     DbSet<ApplicationUser> Users { get; }
     DbSet<Competition> Competitions { get; }
-    DbSet<CompetitionRegister> CompetitionRegisters { get; }
+    DbSet<Participant> Participants { get; }
     DbSet<CompetitionTable> CompetitionTables { get; }
     DbSet<FileEntity> Files { get; }
     

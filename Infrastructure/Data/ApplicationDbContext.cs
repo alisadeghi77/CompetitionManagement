@@ -15,7 +15,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     }
 
     public DbSet<Competition> Competitions => Set<Competition>();
-    public DbSet<CompetitionRegister> CompetitionRegisters => Set<CompetitionRegister>();
+    public DbSet<Participant> Participants => Set<Participant>();
     public DbSet<CompetitionTable> CompetitionTables => Set<CompetitionTable>();
     public DbSet<FileEntity> Files => Set<FileEntity>();
 

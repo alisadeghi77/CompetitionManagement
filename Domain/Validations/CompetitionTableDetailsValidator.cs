@@ -7,11 +7,11 @@ public class CompetitionTableDetailsValidator : AbstractValidator<CompetitionTab
 {
     public CompetitionTableDetailsValidator()
     {
-        RuleFor(x => x.FirstPlayerRegisterId)
-            .GreaterThan(0).WithMessage("شناسه ثبت‌نام اول الزامی است.");
+        RuleFor(x => x.FirstParticipantId)
+            .GreaterThan(0).WithMessage("شناسه ثبت ‌نام اول الزامی است.");
 
-        RuleFor(x => x.SecondPlayerRegisterId)
-            .GreaterThan(0).WithMessage("شناسه ثبت‌نام دوم الزامی است.");
+        RuleFor(x => x.SecondParticipantId)
+            .GreaterThan(0).WithMessage("شناسه ثبت ‌نام دوم الزامی است.");
 
         RuleFor(x => x.Status)
             .IsInEnum().WithMessage("وضعیت معتبر نیست.");

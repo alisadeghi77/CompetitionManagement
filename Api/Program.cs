@@ -1,16 +1,12 @@
-using System.Reflection;
 using System.Text;
 using Api.Middleware;
 using Application;
-using Application.Services;
 using Domain.Entities;
 using Infrastructure;
 using Infrastructure.Data;
 using Infrastructure.Seed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 

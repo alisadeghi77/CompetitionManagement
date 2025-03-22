@@ -1,16 +1,13 @@
-﻿using Api.Models;
-using Application.Auth.CurrentUser;
+﻿using Application.Auth.CurrentUser;
 using Application.Auth.Login;
-using Application.Auth.Register;
 using Application.Auth.Verify;
-using Domain.Constant;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
-[Route("api/auth")]
+[Route("api/[controller]")]
 [ApiController]
 public class AuthController(ISender sender) : ControllerBase
 {
@@ -21,32 +18,7 @@ public class AuthController(ISender sender) : ControllerBase
         await sender.Send(command);
         return Ok();
     }
-
-
-    [HttpPost("register-planner")]
-    [AllowAnonymous]
-    public async Task<IActionResult> RegisterPlanner([FromBody] RegisterRequest request)
-    {
-        await sender.Send(new RegisterCommand(
-            request.PhoneNumber,
-            request.FirstName,
-            request.LastName,
-            RoleConstant.Planner));
-        return Ok();
-    }
     
-    [HttpPost("register-player")]
-    [AllowAnonymous]
-    public async Task<IActionResult> RegisterPlayer([FromBody] RegisterRequest request)
-    {
-        await sender.Send(new RegisterCommand(
-            request.PhoneNumber,
-            request.FirstName,
-            request.LastName,
-            RoleConstant.Player));
-        return Ok();
-    }
-
     [HttpPost("verify")]
     [AllowAnonymous]
     public async Task<IActionResult> OtpLogin([FromBody] VerifyCommand command)

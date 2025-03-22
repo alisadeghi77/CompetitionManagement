@@ -237,13 +237,13 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompetitionRegisters",
+                name: "Participants",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CompetitionId = table.Column<long>(type: "bigint", nullable: false),
-                    PlayerUserId = table.Column<string>(type: "text", nullable: false),
+                    ParticipantUserId = table.Column<string>(type: "text", nullable: false),
                     CoachPhoneNumber = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     CoachUserId = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false),
@@ -255,22 +255,22 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompetitionRegisters", x => x.Id);
+                    table.PrimaryKey("PK_Participants", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CompetitionRegisters_CompetitionDefinitions_CompetitionId",
+                        name: "FK_Participants_CompetitionDefinitions_CompetitionId",
                         column: x => x.CompetitionId,
                         principalTable: "CompetitionDefinitions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CompetitionRegisters_Users_CoachUserId",
+                        name: "FK_Participants_Users_CoachUserId",
                         column: x => x.CoachUserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CompetitionRegisters_Users_PlayerUserId",
-                        column: x => x.PlayerUserId,
+                        name: "FK_Participants_Users_ParticipantUserId",
+                        column: x => x.ParticipantUserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -282,9 +282,9 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RegisterParams = table.Column<List<CompetitionRegisterParam>>(type: "jsonb", nullable: true),
-                    FirstPlayerRegisterId = table.Column<long>(type: "bigint", nullable: false),
-                    SecondPlayerRegisterId = table.Column<long>(type: "bigint", nullable: false),
+                    RegisterParams = table.Column<List<ParticipantParam>>(type: "jsonb", nullable: true),
+                    FirstParticipantId = table.Column<long>(type: "bigint", nullable: false),
+                    SecondParticipantId = table.Column<long>(type: "bigint", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
@@ -295,15 +295,15 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_CompetitionTableDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CompetitionTableDetails_CompetitionRegisters_FirstPlayerReg~",
-                        column: x => x.FirstPlayerRegisterId,
-                        principalTable: "CompetitionRegisters",
+                        name: "FK_CompetitionTableDetails_Participants_FirstParticipantId",
+                        column: x => x.FirstParticipantId,
+                        principalTable: "Participants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CompetitionTableDetails_CompetitionRegisters_SecondPlayerRe~",
-                        column: x => x.SecondPlayerRegisterId,
-                        principalTable: "CompetitionRegisters",
+                        name: "FK_CompetitionTableDetails_Participants_SecondParticipantId",
+                        column: x => x.SecondParticipantId,
+                        principalTable: "Participants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -345,29 +345,35 @@ namespace Infrastructure.Migrations
                 column: "PlannerUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetitionRegisters_CoachUserId",
-                table: "CompetitionRegisters",
+                name: "IX_CompetitionTableDetails_FirstParticipantId",
+                table: "CompetitionTableDetails",
+                column: "FirstParticipantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompetitionTableDetails_SecondParticipantId",
+                table: "CompetitionTableDetails",
+                column: "SecondParticipantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_FileName",
+                table: "Files",
+                column: "FileName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Participants_CoachUserId",
+                table: "Participants",
                 column: "CoachUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetitionRegisters_CompetitionId",
-                table: "CompetitionRegisters",
+                name: "IX_Participants_CompetitionId",
+                table: "Participants",
                 column: "CompetitionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetitionRegisters_PlayerUserId",
-                table: "CompetitionRegisters",
-                column: "PlayerUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompetitionTableDetails_FirstPlayerRegisterId",
-                table: "CompetitionTableDetails",
-                column: "FirstPlayerRegisterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompetitionTableDetails_SecondPlayerRegisterId",
-                table: "CompetitionTableDetails",
-                column: "SecondPlayerRegisterId");
+                name: "IX_Participants_ParticipantUserId",
+                table: "Participants",
+                column: "ParticipantUserId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -412,7 +418,7 @@ namespace Infrastructure.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "CompetitionRegisters");
+                name: "Participants");
 
             migrationBuilder.DropTable(
                 name: "CompetitionDefinitions");

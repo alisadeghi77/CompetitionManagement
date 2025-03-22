@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.Configurations;
 
-public class CompetitionRegisterConfiguration : IEntityTypeConfiguration<CompetitionRegister>
+public class ParticipantConfiguration : IEntityTypeConfiguration<Participant>
 {
-    public void Configure(EntityTypeBuilder<CompetitionRegister> builder)
+    public void Configure(EntityTypeBuilder<Participant> builder)
     {
-        builder.ToTable("CompetitionRegisters");
+        builder.ToTable("Participants");
 
         builder.HasKey(cr => cr.Id);
         
@@ -22,9 +22,9 @@ public class CompetitionRegisterConfiguration : IEntityTypeConfiguration<Competi
         builder.Property(cr => cr.Status)
             .IsRequired();
 
-        builder.HasOne(x => x.PlayerUser)
+        builder.HasOne(x => x.ParticipantUser)
             .WithMany()
-            .HasForeignKey(x => x.PlayerUserId)
+            .HasForeignKey(x => x.ParticipantUserId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
             
@@ -38,7 +38,7 @@ public class CompetitionRegisterConfiguration : IEntityTypeConfiguration<Competi
             .HasColumnType("jsonb")
             .HasConversion(
                 v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-                v => JsonSerializer.Deserialize<List<CompetitionRegisterParam>>(v, (JsonSerializerOptions)null));
+                v => JsonSerializer.Deserialize<List<ParticipantParam>>(v, (JsonSerializerOptions)null));
 
     }
 }

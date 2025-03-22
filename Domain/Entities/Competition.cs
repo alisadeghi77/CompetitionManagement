@@ -8,7 +8,7 @@ namespace Domain.Entities;
 
 public class Competition : BaseAuditableEntity
 {
-    private readonly List<CompetitionRegister> _players = new();
+    private readonly List<Participant> _participants = new();
     
     public required string PlannerUserId { get; set; }
     public required ApplicationUser PlannerUser { get; set; }
@@ -22,7 +22,7 @@ public class Competition : BaseAuditableEntity
     
     [Column("RegisterParams", TypeName = "jsonb")]
     public List<CompetitionParam>? RegisterParams { get; private set; } = new();
-    public IReadOnlyCollection<CompetitionRegister> Players => _players; 
+    public IReadOnlyCollection<Participant> Participants => _participants; 
 
     public static Competition Create(
         ApplicationUser plannerUser,

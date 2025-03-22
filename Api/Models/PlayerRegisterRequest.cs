@@ -1,6 +1,6 @@
 ﻿namespace Api.Models;
 
-public record PlayerRegisterRequest(
+public record RegisterParticipantRequest(
     string? CoachId,
     string? CoachPhoneNumber,
     long CompetitionId,
