@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Application.Auth.Login;
+using Application.Common;
 using Application.Services;
 using Domain.Entities;
 using Domain.Exceptions;

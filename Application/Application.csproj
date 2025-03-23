@@ -16,4 +16,8 @@
         <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.6.1"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Users\" />
+    </ItemGroup>
+
 </Project>

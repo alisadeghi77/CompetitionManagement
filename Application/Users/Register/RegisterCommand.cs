@@ -1,10 +1,10 @@
-﻿using Application.Services;
+﻿using Application.Common;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Application.Auth.Register;
+namespace Application.Users.Register;
 
 public record RegisterCommand(string PhoneNumber, string FirstName, string LastName, string Role) : IRequest;
 

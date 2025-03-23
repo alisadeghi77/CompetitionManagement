@@ -21,17 +21,11 @@ public class AuthController(ISender sender) : ControllerBase
     
     [HttpPost("verify")]
     [AllowAnonymous]
-    public async Task<IActionResult> OtpLogin([FromBody] VerifyCommand command)
-    {
-        var token = await sender.Send(command);
-        return Ok(token);
-    }
+    public async Task<IActionResult> OtpLogin([FromBody] VerifyCommand command) 
+        => Ok(await sender.Send(command));
 
     [HttpGet("me")]
     [Authorize]
-    public async Task<IActionResult> GetCurrentUser()
-    {
-        var user = await sender.Send(new GetCurrentUserQuery(User));
-        return Ok(user);
-    }
+    public async Task<IActionResult> GetCurrentUser() 
+        => Ok(await sender.Send(new GetCurrentUserQuery(User)));
 }

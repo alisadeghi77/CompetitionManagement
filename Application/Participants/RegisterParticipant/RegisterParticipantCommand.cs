@@ -1,5 +1,4 @@
 ﻿using Application.Common;
-using Application.Services;
 using Domain.Constant;
 using Domain.Entities;
 using Domain.Enums;
@@ -8,7 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Competitions.RegisterParticipant;
+namespace Application.Participants.RegisterParticipant;
 
 public record RegisterParticipantCommand(
     string ParticipantUserId,

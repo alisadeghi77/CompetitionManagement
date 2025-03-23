@@ -1,6 +1,6 @@
 ﻿using Api.Models;
-using Application.Auth.Register;
-using Application.Competitions.GetCoaches;
+using Application.Users.GetCoaches;
+using Application.Users.Register;
 using Domain.Constant;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +12,18 @@ namespace Api.Controllers;
 [ApiController]
 public class UserController(ISender sender) : ControllerBase
 {
+    [HttpPut("Coach")]
+    [Authorize($"{RoleConstant.Coach}")]
+    public async Task<IActionResult> EditCoachInformation([FromBody] RegisterRequest request)
+    {
+        await sender.Send(new RegisterCommand(
+            request.PhoneNumber,
+            request.FirstName,
+            request.LastName,
+            RoleConstant.Planner));
+        return Ok();
+    }
+
 
     [HttpPost("Planner")]
     [AllowAnonymous]
@@ -24,7 +36,8 @@ public class UserController(ISender sender) : ControllerBase
             RoleConstant.Planner));
         return Ok();
     }
-    
+
+
     [HttpPost("Participant")]
     [AllowAnonymous]
     public async Task<IActionResult> RegisterParticipant([FromBody] RegisterRequest request)
@@ -36,9 +49,10 @@ public class UserController(ISender sender) : ControllerBase
             RoleConstant.Participant));
         return Ok();
     }
-    
+
+
     [HttpGet("Coaches")]
     [Authorize]
-    public async Task<IActionResult> GetCoaches([FromQuery] string phoneNumber) 
+    public async Task<IActionResult> GetCoaches([FromQuery] string phoneNumber)
         => Ok(await sender.Send(new GetCoachesQuery(phoneNumber)));
 }

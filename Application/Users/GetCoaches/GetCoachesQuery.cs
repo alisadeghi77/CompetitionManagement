@@ -3,7 +3,7 @@ using Domain.Constant;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Competitions.GetCoaches;
+namespace Application.Users.GetCoaches;
 
 public record GetCoachesQuery(string PhoneNumber) : IRequest<List<CoachDto>>;
 

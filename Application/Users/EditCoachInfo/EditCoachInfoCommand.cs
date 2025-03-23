@@ -5,20 +5,20 @@ using Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-namespace Application.Competitions.RegisterCoach;
+namespace Application.Users.EditCoachInfo;
 
-public record RegisterCoachCommand(
+public record EditCoachInfoCommand(
     string CoachUserId,
     string FirstName,
     string LastName,
     DateTime BirthDate) : IRequest;
 
-public class RegisterCoachCommandHandler(
+public class EditCoachInfoCommandHandler(
     IApplicationDbContext dbContext,
     UserManager<ApplicationUser> userManager) :
-    IRequestHandler<RegisterCoachCommand>
+    IRequestHandler<EditCoachInfoCommand>
 {
-    public async Task Handle(RegisterCoachCommand request, CancellationToken cancellationToken)
+    public async Task Handle(EditCoachInfoCommand request, CancellationToken cancellationToken)
     {
         var coachUser = await userManager.FindByIdAsync(request.CoachUserId);
         if (coachUser is null)
