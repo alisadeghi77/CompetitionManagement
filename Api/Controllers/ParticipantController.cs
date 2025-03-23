@@ -1,8 +1,9 @@
 ﻿using Api.ExtensionMethods;
 using Api.Models;
-using Application.Competitions.GetCompetitionList;
+using Application.Participants.RegisterChangeStatus;
 using Application.Participants.RegisterParticipant;
 using Domain.Constant;
+using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,8 +17,8 @@ public class ParticipantController(ISender sender) : ControllerBase
     [HttpGet]
     [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
     public async Task<IActionResult> GetList() => throw new NotImplementedException();
-    
-    
+
+
     [HttpPost]
     [Authorize(Roles = $"{RoleConstant.Participant}")]
     public async Task<IActionResult> CompetitionDefinition(RegisterParticipantRequest request) =>
@@ -27,4 +28,22 @@ public class ParticipantController(ISender sender) : ControllerBase
             request.CoachPhoneNumber,
             request.CompetitionId,
             request.Params)));
+
+
+    [HttpPost("approve/{ParticipantId}")]
+    [Authorize(Roles = $"{RoleConstant.Planner},{RoleConstant.Admin}")]
+    public async Task<IActionResult> RegisterApprove([FromRoute] long id)
+    {
+        await sender.Send(new ParticipantRegisterChangeStatusCommand(id, RegisterStatus.Approved));
+        return Ok();
+    }
+    
+    
+    [HttpPost("reject/{ParticipantId}")]
+    [Authorize(Roles = $"{RoleConstant.Planner},{RoleConstant.Admin}")]
+    public async Task<IActionResult> RegisterReject([FromRoute] long id)
+    {
+        await sender.Send(new ParticipantRegisterChangeStatusCommand(id, RegisterStatus.Rejected));
+        return Ok();
+    }
 }

@@ -50,6 +50,8 @@ public class Participant : BaseAuditableEntity
         
         return register;
     }
+
+    public void ChangeStatus(RegisterStatus status) => Status = status;
 }
 
 
