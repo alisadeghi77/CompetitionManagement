@@ -12,20 +12,20 @@ public class GetCompetitionByIdQueryHandler(IApplicationDbContext dbContext) :
 {
     public async Task<CompetitionDetailsDto?> Handle(GetCompetitionByIdQuery query, CancellationToken cancellationToken)
     {
-        var entity = await dbContext.Competitions
+        var competition = await dbContext.Competitions
             .FirstOrDefaultAsync(w => w.Id == query.Id, cancellationToken);
 
-        if (entity is null)
+        if (competition is null)
             throw new NotFoundException("مسابقه یافت نشد.");
         
         return new CompetitionDetailsDto(
-            entity.Id,
-            entity.Title,
-            entity.Date,
-            entity.Address,
-            entity.BannerImageId,
-            entity.LicenseImageId,
-            entity.Status,
-            entity.RegisterParams);
+            competition.Id,
+            competition.Title,
+            competition.Date,
+            competition.Address,
+            competition.BannerImageId,
+            competition.LicenseImageId,
+            competition.Status,
+            competition.RegisterParams);
     }
 }

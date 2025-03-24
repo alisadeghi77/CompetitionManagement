@@ -57,6 +57,7 @@ public class Competition : BaseAuditableEntity
     }
 
     public void SetApprove() => Status = CompetitionStatus.PendToStart;
+    public void SetOnProgress() => Status = CompetitionStatus.OnProgress;
 }
 
 public record CompetitionParam

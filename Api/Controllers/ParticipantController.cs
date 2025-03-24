@@ -30,7 +30,7 @@ public class ParticipantController(ISender sender) : ControllerBase
             request.Params)));
 
 
-    [HttpPost("approve/{ParticipantId}")]
+    [HttpPatch("approve/{ParticipantId}")]
     [Authorize(Roles = $"{RoleConstant.Planner},{RoleConstant.Admin}")]
     public async Task<IActionResult> RegisterApprove([FromRoute] long id)
     {
@@ -39,7 +39,7 @@ public class ParticipantController(ISender sender) : ControllerBase
     }
     
     
-    [HttpPost("reject/{ParticipantId}")]
+    [HttpPatch("reject/{ParticipantId}")]
     [Authorize(Roles = $"{RoleConstant.Planner},{RoleConstant.Admin}")]
     public async Task<IActionResult> RegisterReject([FromRoute] long id)
     {

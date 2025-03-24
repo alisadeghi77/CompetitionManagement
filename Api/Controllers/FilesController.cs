@@ -16,7 +16,7 @@ public class FilesController(ISender sender) : ControllerBase
     public async Task<IActionResult> UploadFile(IFormFile? file)
         => Ok(await sender.Send(new UploadFileCommand(file)));
 
-    [HttpGet("{ParticipantId}")]
+    [HttpGet("{id}")]
     public async Task<FileResult> GetFileDetails(long id)
     {
         var result = await sender.Send(new GetFileByIdQuery(id));
