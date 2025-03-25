@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -237,6 +235,31 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CompetitionBrackets",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    KeyParams = table.Column<string>(type: "text", nullable: false),
+                    Params = table.Column<string>(type: "jsonb", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    CompetitionId = table.Column<long>(type: "bigint", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompetitionBrackets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CompetitionBrackets_CompetitionDefinitions_CompetitionId",
+                        column: x => x.CompetitionId,
+                        principalTable: "CompetitionDefinitions",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Participants",
                 columns: table => new
                 {
@@ -277,15 +300,19 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompetitionTableDetails",
+                name: "CompetitionBracketMatches",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RegisterParams = table.Column<List<ParticipantParam>>(type: "jsonb", nullable: true),
-                    FirstParticipantId = table.Column<long>(type: "bigint", nullable: false),
-                    SecondParticipantId = table.Column<long>(type: "bigint", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CompetitionBracketId = table.Column<long>(type: "bigint", nullable: false),
+                    KeyParams = table.Column<string>(type: "text", nullable: false),
+                    FirstParticipantId = table.Column<long>(type: "bigint", nullable: true),
+                    SecondParticipantId = table.Column<long>(type: "bigint", nullable: true),
+                    WinnerParticipantId = table.Column<long>(type: "bigint", nullable: true),
+                    NextMatchId = table.Column<long>(type: "bigint", nullable: true),
+                    Round = table.Column<int>(type: "integer", nullable: false),
+                    MatchNumberPosition = table.Column<int>(type: "integer", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -293,19 +320,32 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompetitionTableDetails", x => x.Id);
+                    table.PrimaryKey("PK_CompetitionBracketMatches", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CompetitionTableDetails_Participants_FirstParticipantId",
+                        name: "FK_CompetitionBracketMatches_CompetitionBracketMatches_NextMat~",
+                        column: x => x.NextMatchId,
+                        principalTable: "CompetitionBracketMatches",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CompetitionBracketMatches_CompetitionBrackets_CompetitionBr~",
+                        column: x => x.CompetitionBracketId,
+                        principalTable: "CompetitionBrackets",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CompetitionBracketMatches_Participants_FirstParticipantId",
                         column: x => x.FirstParticipantId,
                         principalTable: "Participants",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_CompetitionTableDetails_Participants_SecondParticipantId",
+                        name: "FK_CompetitionBracketMatches_Participants_SecondParticipantId",
                         column: x => x.SecondParticipantId,
                         principalTable: "Participants",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CompetitionBracketMatches_Participants_WinnerParticipantId",
+                        column: x => x.WinnerParticipantId,
+                        principalTable: "Participants",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -340,19 +380,39 @@ namespace Infrastructure.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetitionDefinitions_PlannerUserId",
-                table: "CompetitionDefinitions",
-                column: "PlannerUserId");
+                name: "IX_CompetitionBracketMatches_CompetitionBracketId",
+                table: "CompetitionBracketMatches",
+                column: "CompetitionBracketId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetitionTableDetails_FirstParticipantId",
-                table: "CompetitionTableDetails",
+                name: "IX_CompetitionBracketMatches_FirstParticipantId",
+                table: "CompetitionBracketMatches",
                 column: "FirstParticipantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetitionTableDetails_SecondParticipantId",
-                table: "CompetitionTableDetails",
+                name: "IX_CompetitionBracketMatches_NextMatchId",
+                table: "CompetitionBracketMatches",
+                column: "NextMatchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompetitionBracketMatches_SecondParticipantId",
+                table: "CompetitionBracketMatches",
                 column: "SecondParticipantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompetitionBracketMatches_WinnerParticipantId",
+                table: "CompetitionBracketMatches",
+                column: "WinnerParticipantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompetitionBrackets_CompetitionId",
+                table: "CompetitionBrackets",
+                column: "CompetitionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompetitionDefinitions_PlannerUserId",
+                table: "CompetitionDefinitions",
+                column: "PlannerUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Files_FileName",
@@ -409,13 +469,16 @@ namespace Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CompetitionTableDetails");
+                name: "CompetitionBracketMatches");
 
             migrationBuilder.DropTable(
                 name: "Files");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "CompetitionBrackets");
 
             migrationBuilder.DropTable(
                 name: "Participants");
