@@ -13,7 +13,7 @@ public class GetCompetitionByIdQueryHandler(IApplicationDbContext dbContext) :
     public async Task<CompetitionDetailsDto?> Handle(GetCompetitionByIdQuery query, CancellationToken cancellationToken)
     {
         var competition = await dbContext.Competitions
-            .FirstOrDefaultAsync(w => w.Id == query.Id, cancellationToken);
+            .FirstOrDefaultAsync(w => w.Id == query.Id && w.IsVisible, cancellationToken);
 
         if (competition is null)
             throw new NotFoundException("مسابقه یافت نشد.");

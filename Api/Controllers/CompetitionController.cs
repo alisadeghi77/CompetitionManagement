@@ -1,5 +1,6 @@
 ﻿using Api.ExtensionMethods;
 using Api.Models;
+using Application.Competitions.ChangeCompetitionVisibility;
 using Application.Competitions.CompetitionDefinition;
 using Application.Competitions.GetCompetitionById;
 using Application.Competitions.GetCompetitionList;
@@ -48,11 +49,19 @@ public class CompetitionController(ISender sender) : ControllerBase
         return Ok();
     }
     
-    [HttpPatch("start/{id}")]
+    [HttpPatch("start-registration/{id}")]
     [Authorize(Roles = $"{RoleConstant.Admin}")]
-    public async Task<IActionResult> UpdateCompetitionParamsInfo([FromRoute] long id)
+    public async Task<IActionResult> StartRegistrationCompetition([FromRoute] long id)
     {
         await sender.Send(new StartCompetitionCommand(id));
+        return Ok();
+    }
+    
+    [HttpPatch("change-visibility/{id}")]
+    [Authorize(Roles = $"{RoleConstant.Admin}")]
+    public async Task<IActionResult> ChangeCompetitionVisibility([FromRoute] long id)
+    {
+        await sender.Send(new ChangeCompetitionVisibilityCommand(id));
         return Ok();
     }
 }

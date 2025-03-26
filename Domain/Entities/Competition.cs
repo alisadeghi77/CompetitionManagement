@@ -20,6 +20,7 @@ public class Competition : BaseAuditableEntity
     public CompetitionStatus Status { get; set; }
     public long BannerImageId { get; private set; }
     public long LicenseImageId { get; private set; }
+    public bool IsVisible { get; private set; }
 
 
     [Column("RegisterParams", TypeName = "jsonb")]
@@ -59,6 +60,8 @@ public class Competition : BaseAuditableEntity
         _registerParams.AddRange(param);
     }
 
+    public void ChangeVisibility(bool canVisitOnSite) => IsVisible = canVisitOnSite;
+    
     public void SetApprove() => Status = CompetitionStatus.PendToStart;
     public void SetOnProgress() => Status = CompetitionStatus.OnProgress;
 }
