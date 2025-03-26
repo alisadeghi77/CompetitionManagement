@@ -19,6 +19,8 @@ public class StartCompetitionCommandHandler(IApplicationDbContext dbContext)
             throw new NotFoundException("مسابقه یافت نشد.");
         
         competition.SetApprove();
+        competition.ChangeVisibility(true);
+        competition.ChangeRegistrationStatus(true);
 
         dbContext.Competitions.Update(competition);
 

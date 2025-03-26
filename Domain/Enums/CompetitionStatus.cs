@@ -2,7 +2,7 @@
 
 public enum CompetitionStatus
 {
-    PendToApprove,
+    PendToAdminApprove,
     PendToStart,
     OnProgress,
     End

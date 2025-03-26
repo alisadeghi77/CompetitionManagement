@@ -64,4 +64,12 @@ public class CompetitionController(ISender sender) : ControllerBase
         await sender.Send(new ChangeCompetitionVisibilityCommand(id));
         return Ok();
     }
+    
+    [HttpPatch("change-registration-status/{id}")]
+    [Authorize(Roles = $"{RoleConstant.Admin}")]
+    public async Task<IActionResult> ChangeCompetitionRegistrationStatus([FromRoute] long id)
+    {
+        await sender.Send(new ChangeCompetitionRegistrationCommand(id));
+        return Ok();
+    }
 }

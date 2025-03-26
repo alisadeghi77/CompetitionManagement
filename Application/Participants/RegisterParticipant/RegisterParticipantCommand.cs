@@ -34,9 +34,9 @@ public class RegisterParticipantCommandHandler(
             .FirstOrDefaultAsync(w => w.Id == request.CompetitionId, cancellationToken);
 
         if (competition is null)
-            throw new UnprocessableEntityException("کاربر یافت نشد");
+            throw new UnprocessableEntityException("مسابقه یافت نشد");
 
-        if (competition.Status != CompetitionStatus.PendToStart)
+        if (competition.Status != CompetitionStatus.PendToStart || !competition.CanRegister || !competition.IsVisible)
             throw new UnprocessableEntityException("زمان ثبت نام مسابقه به پایان رسیده است.");
 
         var participant = Participant.Create(

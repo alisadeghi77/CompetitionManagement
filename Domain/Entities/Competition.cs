@@ -20,7 +20,8 @@ public class Competition : BaseAuditableEntity
     public CompetitionStatus Status { get; set; }
     public long BannerImageId { get; private set; }
     public long LicenseImageId { get; private set; }
-    public bool IsVisible { get; private set; }
+    public bool IsVisible { get; private set; } = false;
+    public bool CanRegister { get; private set; } = false;
 
 
     [Column("RegisterParams", TypeName = "jsonb")]
@@ -46,7 +47,7 @@ public class Competition : BaseAuditableEntity
             Date = date,
             BannerImageId = bannerImageId,
             LicenseImageId = licenseImageId,
-            Status = CompetitionStatus.PendToApprove
+            Status = CompetitionStatus.PendToAdminApprove
         };
 
         new CompetitionValidator().ValidateAndThrow(competition);
@@ -60,6 +61,7 @@ public class Competition : BaseAuditableEntity
         _registerParams.AddRange(param);
     }
 
+    public void ChangeRegistrationStatus(bool canRegister) => CanRegister = canRegister;
     public void ChangeVisibility(bool canVisitOnSite) => IsVisible = canVisitOnSite;
     
     public void SetApprove() => Status = CompetitionStatus.PendToStart;
