@@ -1,6 +1,8 @@
 ﻿using Application.Brackets.DeleteBrackets;
 using Application.Brackets.GenerateBracketByKey;
 using Application.Brackets.GenerateBrackets;
+using Application.Brackets.GetBracketsWinnerReport;
+using Application.Brackets.GetCoachMedalReport;
 using Domain.Constant;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +14,17 @@ namespace Api.Controllers;
 [Route("api/[controller]")]
 public class BracketController(ISender sender) : ControllerBase
 {
+ 
+    [HttpGet("brackets-report/{bracketId}")]
+    [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
+    public async Task<IActionResult> GetBracketsWinnerReport(long bracketId) 
+        => Ok(await sender.Send(new GetBracketsWinnerReportQuery(bracketId)));
+    
+    [HttpGet("coach-score-report/{bracketId}")]
+    [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
+    public async Task<IActionResult> GetCoachScoreReport(long bracketId) 
+        => Ok(await sender.Send(new GetCoachMedalReportQuery(bracketId)));
+
     [HttpPost("{competitionId}")]
     [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
     public async Task<IActionResult> GenerateBrackets([FromRoute] int competitionId)

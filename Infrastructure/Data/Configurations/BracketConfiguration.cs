@@ -26,6 +26,30 @@ public class BracketConfiguration : IEntityTypeConfiguration<Bracket>
             .WithMany(x => x.Brackets)
             .HasForeignKey(x => x.CompetitionId)
             .OnDelete(DeleteBehavior.NoAction)
-            .IsRequired(true);
+            .IsRequired();
+        
+        builder.HasOne(c => c.GoldMedalistParticipant)
+            .WithMany()
+            .HasForeignKey(c => c.GoldMedalistParticipantId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(c => c.SilverMedalistParticipant)
+            .WithMany()
+            .HasForeignKey(c => c.SilverMedalistParticipantId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(c => c.BronzeMedalistParticipant)
+            .WithMany()
+            .HasForeignKey(c => c.BronzeMedalistParticipantId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(c => c.JoinBronzeMedalistParticipant)
+            .WithMany()
+            .HasForeignKey(c => c.JoinBronzeMedalistParticipantId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

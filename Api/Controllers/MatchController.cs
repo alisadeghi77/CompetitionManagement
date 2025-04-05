@@ -18,4 +18,5 @@ public class MatchController(ISender sender) : ControllerBase
         await sender.Send(new SetMatchWinnerCommand(request.MatchId, request.ParticipantId));
         return Ok();
     }
+
 }
