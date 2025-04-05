@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Application.Auth.CurrentUser;
 
-//TODO: change result to dto
 public record GetCurrentUserQuery(ClaimsPrincipal User) : IRequest<UserDto>;
 
 public class GetCurrentUserQueryHandler(UserManager<ApplicationUser> userManager)

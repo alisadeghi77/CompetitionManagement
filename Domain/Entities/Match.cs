@@ -1,6 +1,8 @@
 ﻿using Domain.Common;
 using Domain.Enums;
 using Domain.Exceptions;
+using Domain.Validations;
+using FluentValidation;
 
 namespace Domain.Entities;
 
@@ -101,7 +103,7 @@ public class Match : BaseEntity<Guid>
             Bracket = bracket,
         };
 
-        //TODO: validate bracket should have key, round and position number should be valid  
+        new MatchValidator().ValidateAndThrow(model);
 
         return model;
     }

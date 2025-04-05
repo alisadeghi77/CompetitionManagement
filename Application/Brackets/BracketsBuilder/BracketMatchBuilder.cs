@@ -32,7 +32,7 @@ public class BracketMatchBuilder
         _bracketSize = NextPowerOfTwo(_participants.Count);
         return this;
     }
-    
+
     public BracketMatchBuilder GenerateMatch()
     {
         _matches = BuildMatchTree(_bracketSize);
@@ -48,19 +48,20 @@ public class BracketMatchBuilder
 
         var byePositions = (_bracketSize switch
             {
-                2 => [1],
-                4 => [3],
-                8 => [7, 0, 4],
-                16 => [15, 0, 8, 7, 12, 4, 11],
-                32 => [31, 0, 16, 15, 24, 8, 23, 7, 28, 3, 19, 12, 27, 11, 20],
+                2 => new[] { 1 },
+                4 => new[] { 3 },
+                8 => new[] { 7, 0, 4 },
+                16 => new[] { 15, 0, 8, 7, 12, 4, 11 },
+                32 => new[] { 31, 0, 16, 15, 24, 8, 23, 7, 28, 3, 19, 12, 27, 11, 20 },
                 64 =>
-                [
-                    63, 0, 32, 31, 48, 15, 47, 16, 56, 7, 40, 23, 55, 24, 39, 8, 60, 3, 36, 27, 44, 19, 52, 11, 59, 4,
-                    35,
-                    28, 43, 20, 51
-                ],
-                //TODO: throw exception
-                _ => Enumerable.Range(0, _bracketSize).Reverse().ToArray()
+                    new[]
+                    {
+                        63, 0, 32, 31, 48, 15, 47, 16, 56, 7, 40, 23, 55, 24, 39, 8, 60, 3, 36, 27, 44, 19, 52, 11, 59,
+                        4,
+                        35,
+                        28, 43, 20, 51
+                    },
+                _ => throw new Exception("تعداد شرکت کنندگان بیش از حد مجاز است")
             })
             .Take(byeCount);
 
@@ -142,7 +143,7 @@ public class BracketMatchBuilder
         return _matches;
     }
 
-    
+
     protected static Participant? FindOptimalParticipant(
         IReadOnlyCollection<Participant> participant,
         IReadOnlyDictionary<string, int> teamDistribution,

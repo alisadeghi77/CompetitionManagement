@@ -54,11 +54,7 @@ public class Competition : BaseAuditableEntity
     }
 
 
-    public void SetRegisterParams(CompetitionParam param)
-    {
-        //TODO: Validation
-        RegisterParams = param;
-    }
+    public void SetRegisterParams(CompetitionParam param) => RegisterParams = param;
 
     public void ChangeRegistrationStatus(bool canRegister) => CanRegister = canRegister;
     public void ChangeVisibility(bool canVisitOnSite) => IsVisible = canVisitOnSite;

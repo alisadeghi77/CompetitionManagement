@@ -53,8 +53,10 @@ public class Participant : BaseAuditableEntity
 
     public bool HasSameParamsWith(List<ParticipantParam> param)
     {
-        //TODO: set perdicate
-        return true;
+        if (RegisterParams is null)
+            return false;
+        
+        return new HashSet<ParticipantParam>(param).SetEquals(RegisterParams);
     }
 
     public void ChangeStatus(RegisterStatus status) => Status = status;
