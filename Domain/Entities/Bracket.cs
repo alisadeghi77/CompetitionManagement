@@ -64,31 +64,27 @@ public class Bracket : BaseAuditableEntity
     public static string GenerateKey(List<ParticipantParam> param)
         => string.Join('_', param.Select(s => $@"{s.Key}.{s.Value}"));
 
-    public void SetGoldMedalist(Participant participant)
+    public void SetGoldMedalist(Participant? participant)
     {
-        GoldMedalistParticipant =
-            participant ?? throw new UnprocessableEntityException("شرکت کننده انتخاب نشده است.");
-        GoldMedalistParticipantId = participant.Id;
+        GoldMedalistParticipant = participant;
+        GoldMedalistParticipantId = participant?.Id ?? null;
     }
 
-    public void SetSilverMedalist(Participant participant)
+    public void SetSilverMedalist(Participant? participant)
     {
-        SilverMedalistParticipant =
-            participant ?? throw new UnprocessableEntityException("شرکت کننده انتخاب نشده است.");
-        SilverMedalistParticipantId = participant.Id;
+        SilverMedalistParticipant = participant;
+        SilverMedalistParticipantId = participant?.Id ?? null;
     }
 
-    public void SetBronzeMedalist(Participant participant)
+    public void SetBronzeMedalist(Participant? participant)
     {
-        BronzeMedalistParticipant =
-            participant ?? throw new UnprocessableEntityException("شرکت کننده انتخاب نشده است.");
-        BronzeMedalistParticipantId = participant.Id;
+        BronzeMedalistParticipant = participant;
+        BronzeMedalistParticipantId = participant?.Id ?? null;
     }
 
-    public void SetJoinBronzeMedalist(Participant participant)
+    public void SetJoinBronzeMedalist(Participant? participant)
     {
-        JoinBronzeMedalistParticipant =
-            participant ?? throw new UnprocessableEntityException("شرکت کننده انتخاب نشده است.");
-        JoinBronzeMedalistParticipantId = participant.Id;
+        JoinBronzeMedalistParticipant = participant;
+        JoinBronzeMedalistParticipantId = participant?.Id ?? null;
     }
 }
