@@ -17,7 +17,7 @@ public class CompetitionDefinitionConfiguration : IEntityTypeConfiguration<Compe
             .HasColumnType("jsonb")
             .HasConversion(
                 v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-                v => JsonSerializer.Deserialize<List<CompetitionParam>>(v, (JsonSerializerOptions)null));
+                v => JsonSerializer.Deserialize<CompetitionParam>(v, (JsonSerializerOptions)null));
         
         builder.Property(c => c.Id).ValueGeneratedOnAdd();
 

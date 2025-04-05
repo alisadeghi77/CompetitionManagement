@@ -21,7 +21,7 @@ public class AuthController(ISender sender) : ControllerBase
     
     [HttpPost("verify")]
     [AllowAnonymous]
-    public async Task<IActionResult> OtpLogin([FromBody] VerifyCommand command) 
+    public async Task<IActionResult> Verify([FromBody] VerifyCommand command) 
         => Ok(await sender.Send(command));
 
     [HttpGet("me")]

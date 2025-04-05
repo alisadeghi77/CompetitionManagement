@@ -17,9 +17,9 @@ public class Participant : BaseAuditableEntity
 
     public string? CoachPhoneNumber { get; set; }
     
-    public string? CoachUserId { get; private set; }
+    public string CoachUserId { get; private set; }
     
-    public ApplicationUser? CoachUser { get; private set; }
+    public ApplicationUser CoachUser { get; private set; }
 
     public RegisterStatus Status { get; private set; }
     
@@ -49,6 +49,12 @@ public class Participant : BaseAuditableEntity
         new ParticipantValidator().ValidateAndThrow(register);
         
         return register;
+    }
+
+    public bool HasSameParamsWith(List<ParticipantParam> param)
+    {
+        //TODO: set perdicate
+        return true;
     }
 
     public void ChangeStatus(RegisterStatus status) => Status = status;

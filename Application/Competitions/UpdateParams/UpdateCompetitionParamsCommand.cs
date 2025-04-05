@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Competitions.UpdateParams;
 
-public record UpdateCompetitionParamsCommand(long CompetitionId, List<CompetitionParam> RegisterParams) : IRequest;
+public record UpdateCompetitionParamsCommand(long CompetitionId, CompetitionParam RegisterParams) : IRequest;
 
 public class UpdateCompetitionParamsCommandHandler(IApplicationDbContext dbContext)
     : IRequestHandler<UpdateCompetitionParamsCommand>

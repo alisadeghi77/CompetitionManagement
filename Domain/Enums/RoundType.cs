@@ -1,14 +1,7 @@
-﻿namespace Domain.Entities;
+﻿namespace Domain.Enums;
 
 public enum RoundType
 {
-    
-    /// <summary>
-    /// 128 teams remaining
-    /// 64 games
-    /// </summary>
-    RoundOf128 = 128,
-    
     /// <summary>
     /// 64 teams remaining
     /// 32 games

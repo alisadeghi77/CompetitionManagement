@@ -11,4 +11,4 @@ public record CompetitionDetailsDto(
     long BannerImageId,
     long LicenseImageId,
     CompetitionStatus Status,
-    List<CompetitionParam>? RegisterParams);
+    CompetitionParam RegisterParams);

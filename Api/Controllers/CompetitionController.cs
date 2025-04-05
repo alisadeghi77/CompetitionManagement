@@ -43,7 +43,7 @@ public class CompetitionController(ISender sender) : ControllerBase
     [Authorize(Roles = $"{RoleConstant.Admin}")]
     public async Task<IActionResult> UpdateCompetitionParamsInfo(
         [FromRoute] long id,
-        [FromBody] List<CompetitionParam> param)
+        [FromBody] CompetitionParam param)
     {
         await sender.Send(new UpdateCompetitionParamsCommand(id, param));
         return Ok();
