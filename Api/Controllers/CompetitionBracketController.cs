@@ -1,4 +1,6 @@
-﻿using Application.CompetitionBrackets.GenerateBrackets;
+﻿using Application.CompetitionBrackets.DeleteBrackets;
+using Application.CompetitionBrackets.GenerateBrackets;
+using Domain.Constant;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +11,20 @@ namespace Api.Controllers;
 [Route("api/[controller]")]
 public class CompetitionBracketController(ISender sender) : ControllerBase
 {
-    [HttpGet("{competitionId}")]
-    [AllowAnonymous]
-    public async Task<IActionResult> GetList(int competitionId)
+    [HttpPost("{competitionId}")]
+    [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
+    public async Task<IActionResult> GenerateBrackets([FromRoute] int competitionId)
     {
         await sender.Send(new GenerateBracketsCommand(competitionId));
+        return Ok();
+    }
+    
+    
+    [HttpDelete("{competitionId}")]
+    [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
+    public async Task<IActionResult> DeleteBrackets([FromRoute] int competitionId)
+    {
+        await sender.Send(new DeleteBracketsCommand(competitionId));
         return Ok();
     }
 }

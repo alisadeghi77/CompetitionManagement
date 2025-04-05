@@ -19,6 +19,7 @@ public class GenerateBracketsCommandHandler(IApplicationDbContext dbContext)
     {
         var competition = await dbContext.Competitions
             .Include(c => c.Brackets)
+            .ThenInclude(c => c.Matches)
             .Include(c => c.Participants)
             .ThenInclude(c => c.CoachUser)
             .Include(c => c.Participants)
@@ -28,10 +29,9 @@ public class GenerateBracketsCommandHandler(IApplicationDbContext dbContext)
         if (competition is null)
             throw new UnprocessableEntityException("مسابقه مورد نظر یافت نشد.");
 
-        
         if (competition.Status != CompetitionStatus.PendToStart)
             throw new UnprocessableEntityException("مسابقه مورد نظر امکان جدول بندی ندارد.");
-        
+
         if (competition.Brackets.Any())
             throw new UnprocessableEntityException("مسابقه مورد نظر جدول بندی شده است.");
 
@@ -70,7 +70,7 @@ public class GenerateBracketsCommandHandler(IApplicationDbContext dbContext)
         {
             var newPath = new List<ParticipantParam>(currentPath)
                 { new() { Key = param.Key, Value = value.Key } };
-            
+
             if (value.Params == null || value.Params.Count == 0)
                 results.Add(newPath);
             else

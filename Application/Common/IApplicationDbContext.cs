@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Application.Common;
 
@@ -13,4 +14,7 @@ public interface IApplicationDbContext
     DbSet<FileEntity> Files { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+
+    void RemoveRange(params object[] entities);
+    EntityEntry<TEntity> Remove<TEntity>(TEntity entity) where TEntity : class;
 }
