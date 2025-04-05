@@ -44,7 +44,7 @@ public class MatchConfiguration : IEntityTypeConfiguration<Match>
             .IsRequired(false);
         
         builder.HasOne(x => x.NextMatch)
-            .WithMany()
+            .WithMany(x => x.ParentMatches)
             .HasForeignKey(x => x.NextMatchId)
             .OnDelete(DeleteBehavior.NoAction)
             .IsRequired(false);

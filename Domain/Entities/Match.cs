@@ -6,6 +6,8 @@ namespace Domain.Entities;
 
 public class Match : BaseEntity<Guid>
 {
+    private List<Match> _parentMatches = new();
+
     private Match(
         long bracketId,
         string keyParams,
@@ -36,6 +38,8 @@ public class Match : BaseEntity<Guid>
 
     public Guid? NextMatchId { get; private set; }
     public Match? NextMatch { get; private set; }
+
+    public IReadOnlyCollection<Match> ParentMatches => _parentMatches;
 
     /// <summary>
     /// 32, 16, 8, 4, 2, 1
@@ -111,7 +115,34 @@ public class Match : BaseEntity<Guid>
         WinnerParticipantId = FirstParticipantId;
 
         if (IsFinalMatch())
+        {
+            Bracket.SetGoldMedalist(FirstParticipant);
+            Bracket.SetSilverMedalist(SecondParticipant);
+
+            var bronzeParentMatch = ParentMatches.FirstOrDefault(w => w.WinnerParticipantId == FirstParticipantId);
+            if (bronzeParentMatch is not null)
+            {
+                if (bronzeParentMatch.FirstParticipantId == FirstParticipantId && !IsSecondParticipantBye)
+                    Bracket.SetBronzeMedalist(bronzeParentMatch.SecondParticipant);
+
+                if (bronzeParentMatch.SecondParticipantId == FirstParticipantId && !IsFirstParticipantBye)
+                    Bracket.SetBronzeMedalist(bronzeParentMatch.FirstParticipant);
+            }
+
+            var jointBronzeParentMatch =
+                ParentMatches.FirstOrDefault(w => w.WinnerParticipantId == SecondParticipantId);
+            if (jointBronzeParentMatch is not null)
+            {
+                if (jointBronzeParentMatch.FirstParticipantId == SecondParticipantId && !IsSecondParticipantBye)
+                    Bracket.SetJoinBronzeMedalist(jointBronzeParentMatch.SecondParticipant);
+
+                if (jointBronzeParentMatch.SecondParticipantId == SecondParticipantId && !IsFirstParticipantBye)
+                    Bracket.SetJoinBronzeMedalist(jointBronzeParentMatch.FirstParticipant);
+            }
+
+
             return;
+        }
 
         if (MatchNumberPosition % 2 == 1)
             NextMatch.SetFirstParticipant(FirstParticipant);
@@ -129,7 +160,35 @@ public class Match : BaseEntity<Guid>
         WinnerParticipantId = SecondParticipantId;
 
         if (IsFinalMatch())
+        {
+            Bracket.SetGoldMedalist(FirstParticipant);
+            Bracket.SetSilverMedalist(SecondParticipant);
+
+            var bronzeParentMatch = ParentMatches.FirstOrDefault(w => w.WinnerParticipantId == SecondParticipantId);
+            if (bronzeParentMatch is not null)
+            {
+                if (bronzeParentMatch.FirstParticipantId == SecondParticipantId && !IsSecondParticipantBye)
+                    Bracket.SetBronzeMedalist(bronzeParentMatch.SecondParticipant);
+
+                if (bronzeParentMatch.SecondParticipantId == SecondParticipantId && !IsFirstParticipantBye)
+                    Bracket.SetBronzeMedalist(bronzeParentMatch.FirstParticipant);
+            }
+
+            var jointBronzeParentMatch =
+                ParentMatches.FirstOrDefault(w => w.WinnerParticipantId == SecondParticipantId);
+            if (jointBronzeParentMatch is not null)
+            {
+                if (jointBronzeParentMatch.FirstParticipantId == SecondParticipantId && !IsSecondParticipantBye)
+                    Bracket.SetJoinBronzeMedalist(jointBronzeParentMatch.SecondParticipant);
+
+                if (jointBronzeParentMatch.SecondParticipantId == SecondParticipantId && !IsFirstParticipantBye)
+                    Bracket.SetJoinBronzeMedalist(jointBronzeParentMatch.FirstParticipant);
+            }
+
+
             return;
+        }
+
 
         if (MatchNumberPosition % 2 == 1)
             NextMatch.SetFirstParticipant(SecondParticipant);
