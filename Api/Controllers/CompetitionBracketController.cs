@@ -1,4 +1,5 @@
 ﻿using Application.CompetitionBrackets.DeleteBrackets;
+using Application.CompetitionBrackets.GenerateBracketByKey;
 using Application.CompetitionBrackets.GenerateBrackets;
 using Domain.Constant;
 using MediatR;
@@ -18,11 +19,27 @@ public class CompetitionBracketController(ISender sender) : ControllerBase
         await sender.Send(new GenerateBracketsCommand(competitionId));
         return Ok();
     }
-    
-    
+
+    [HttpPost("{competitionId}/{bracketKey}")]
+    [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
+    public async Task<IActionResult> GenerateBracketByKey([FromRoute] int competitionId, [FromRoute] string bracketKey)
+    {
+        await sender.Send(new GenerateBracketByKeyCommand(competitionId, bracketKey));
+        return Ok();
+    }
+
+
     [HttpDelete("{competitionId}")]
     [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
     public async Task<IActionResult> DeleteBrackets([FromRoute] int competitionId)
+    {
+        await sender.Send(new DeleteBracketsCommand(competitionId));
+        return Ok();
+    }
+
+    [HttpDelete("{competitionId}/{bracketKey}")]
+    [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
+    public async Task<IActionResult> DeleteBrackets([FromRoute] int competitionId, [FromRoute] string bracketKey)
     {
         await sender.Send(new DeleteBracketsCommand(competitionId));
         return Ok();

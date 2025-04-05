@@ -1,5 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Enums;
+using Domain.Exceptions;
 
 namespace Domain.Entities;
 
@@ -57,14 +58,14 @@ public class CompetitionBracketMatch : BaseEntity<Guid>
         FirstParticipant = p1;
         FirstParticipantId = p1.Id;
     }
-    
+
     public void SetFirstParticipantsBye()
     {
         FirstParticipant = null;
         FirstParticipantId = null;
         IsFirstParticipantBye = true;
     }
-    
+
     public void SetSecondParticipants(Participant? p2)
     {
         SecondParticipant = p2;
@@ -100,4 +101,41 @@ public class CompetitionBracketMatch : BaseEntity<Guid>
 
         return model;
     }
+
+    public void SetFirstParticipantWinner()
+    {
+        if (FirstParticipantId is null || IsFirstParticipantBye)
+            throw new UnprocessableEntityException("شرکت کننده اول نمی تواند به عنوان برنده انتخاب شود.");
+
+        WinnerParticipant = FirstParticipant;
+        WinnerParticipantId = FirstParticipantId;
+
+        if (IsFinalMatch())
+            return;
+
+        if (MatchNumberPosition % 2 == 1)
+            NextMatch.SetFirstParticipant(FirstParticipant);
+        else
+            NextMatch.SetSecondParticipants(FirstParticipant);
+    }
+
+
+    public void SetSecondParticipantWinner()
+    {
+        if (SecondParticipantId is null || IsSecondParticipantBye)
+            throw new UnprocessableEntityException("شرکت کننده دوم نمی تواند به عنوان برنده انتخاب شود.");
+
+        WinnerParticipant = SecondParticipant;
+        WinnerParticipantId = SecondParticipantId;
+
+        if (IsFinalMatch())
+            return;
+
+        if (MatchNumberPosition % 2 == 1)
+            NextMatch.SetFirstParticipant(SecondParticipant);
+        else
+            NextMatch.SetSecondParticipants(SecondParticipant);
+    }
+
+    public bool IsFinalMatch() => MatchNumberPosition == 1 && NextMatchId is null;
 }

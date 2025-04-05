@@ -16,10 +16,6 @@ public class DeleteBracketsCommandHandler(IApplicationDbContext dbContext)
         var competition = await dbContext.Competitions
             .Include(c => c.Brackets)
             .ThenInclude(c => c.Matches)
-            .Include(c => c.Participants)
-            .ThenInclude(c => c.CoachUser)
-            .Include(c => c.Participants)
-            .ThenInclude(c => c.ParticipantUser)
             .FirstOrDefaultAsync(w => w.Id == request.CompetitionId, cancellationToken);
 
         if (competition is null)

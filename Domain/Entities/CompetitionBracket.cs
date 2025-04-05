@@ -46,6 +46,6 @@ public class CompetitionBracket : BaseAuditableEntity
         return model;
     }
 
-    private static string GenerateKey(List<ParticipantParam> param) 
+    public static string GenerateKey(List<ParticipantParam> param) 
         => string.Join('_', param.Select(s => $@"{s.Key}.{s.Value}"));
 }
