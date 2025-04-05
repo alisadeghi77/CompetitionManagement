@@ -4,22 +4,22 @@ using Domain.Exceptions;
 
 namespace Domain.Entities;
 
-public class CompetitionBracketMatch : BaseEntity<Guid>
+public class Match : BaseEntity<Guid>
 {
-    private CompetitionBracketMatch(
-        long competitionBracketId,
+    private Match(
+        long bracketId,
         string keyParams,
         RoundType round,
         int matchNumberPosition)
     {
-        CompetitionBracketId = competitionBracketId;
+        BracketId = bracketId;
         KeyParams = keyParams;
         Round = round;
         MatchNumberPosition = matchNumberPosition;
     }
 
-    public long CompetitionBracketId { get; private set; }
-    public CompetitionBracket CompetitionBracket { get; private set; }
+    public long BracketId { get; private set; }
+    public Bracket Bracket { get; private set; }
 
     public string KeyParams { get; private set; }
 
@@ -35,7 +35,7 @@ public class CompetitionBracketMatch : BaseEntity<Guid>
     public Participant WinnerParticipant { get; set; }
 
     public Guid? NextMatchId { get; private set; }
-    public CompetitionBracketMatch? NextMatch { get; private set; }
+    public Match? NextMatch { get; private set; }
 
     /// <summary>
     /// 32, 16, 8, 4, 2, 1
@@ -47,7 +47,7 @@ public class CompetitionBracketMatch : BaseEntity<Guid>
     /// </summary>
     public int MatchNumberPosition { get; private set; }
 
-    public void SetNextMatch(CompetitionBracketMatch match)
+    public void SetNextMatch(Match match)
     {
         NextMatchId = match.Id;
         NextMatch = match;
@@ -81,23 +81,23 @@ public class CompetitionBracketMatch : BaseEntity<Guid>
     }
 
 
-    public static CompetitionBracketMatch Create(
+    public static Match Create(
         Guid id,
-        CompetitionBracket competitionBracket,
+        Bracket bracket,
         RoundType round,
         int matchNumberPosition)
     {
-        var model = new CompetitionBracketMatch(
-            competitionBracket.Id,
-            competitionBracket.KeyParams,
+        var model = new Match(
+            bracket.Id,
+            bracket.KeyParams,
             round,
             matchNumberPosition)
         {
             Id = id,
-            CompetitionBracket = competitionBracket,
+            Bracket = bracket,
         };
 
-        //TODO: validate competitionBracket should have key, round and position number should be valid  
+        //TODO: validate bracket should have key, round and position number should be valid  
 
         return model;
     }

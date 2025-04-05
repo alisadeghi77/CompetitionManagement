@@ -1,10 +1,10 @@
-﻿
-using Application.Common;
+﻿using Application.Common;
+using Application.Competitions.ChangeCompetitionVisibility;
 using Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Competitions.ChangeCompetitionVisibility;
+namespace Application.Competitions.ChangeCompetitionRegistration;
 
 public record ChangeCompetitionRegistrationCommand(long Id) : IRequest;
 

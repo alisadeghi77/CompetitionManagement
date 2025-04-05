@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class CompetitionBracketMatchConfiguration : IEntityTypeConfiguration<CompetitionBracketMatch>
+public class MatchConfiguration : IEntityTypeConfiguration<Match>
 {
-    public void Configure(EntityTypeBuilder<CompetitionBracketMatch> builder)
+    public void Configure(EntityTypeBuilder<Match> builder)
     {
-        builder.ToTable("CompetitionBracketMatches");
+        builder.ToTable("Matches");
 
         builder.HasKey(x => x.Id);
 
@@ -19,9 +19,9 @@ public class CompetitionBracketMatchConfiguration : IEntityTypeConfiguration<Com
         builder.Property(x => x.MatchNumberPosition)
             .IsRequired();
 
-        builder.HasOne(x => x.CompetitionBracket)
+        builder.HasOne(x => x.Bracket)
             .WithMany(x => x.Matches)
-            .HasForeignKey(x => x.CompetitionBracketId)
+            .HasForeignKey(x => x.BracketId)
             .OnDelete(DeleteBehavior.NoAction)
             .IsRequired();
 

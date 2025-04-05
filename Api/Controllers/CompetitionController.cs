@@ -1,5 +1,6 @@
 ﻿using Api.ExtensionMethods;
 using Api.Models;
+using Application.Competitions.ChangeCompetitionRegistration;
 using Application.Competitions.ChangeCompetitionVisibility;
 using Application.Competitions.CompetitionDefinition;
 using Application.Competitions.GetCompetitionById;

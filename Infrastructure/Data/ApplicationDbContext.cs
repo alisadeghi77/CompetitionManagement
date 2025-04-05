@@ -16,8 +16,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<Participant> Participants => Set<Participant>();
     public DbSet<Competition> Competitions => Set<Competition>();
-    public DbSet<CompetitionBracket> CompetitionBrackets  => Set<CompetitionBracket>();
-    public DbSet<CompetitionBracketMatch> CompetitionBracketMatches  => Set<CompetitionBracketMatch>();
+    public DbSet<Bracket> Brackets  => Set<Bracket>();
+    public DbSet<Match> Matches  => Set<Match>();
     public DbSet<FileEntity> Files => Set<FileEntity>();
 
     protected override void OnModelCreating(ModelBuilder builder)

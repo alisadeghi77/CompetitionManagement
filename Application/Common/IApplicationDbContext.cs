@@ -9,8 +9,8 @@ public interface IApplicationDbContext
     DbSet<ApplicationUser> Users { get; }
     DbSet<Competition> Competitions { get; }
     DbSet<Participant> Participants { get; }
-    DbSet<CompetitionBracket> CompetitionBrackets { get; }
-    DbSet<CompetitionBracketMatch> CompetitionBracketMatches { get; }
+    DbSet<Bracket> Brackets { get; }
+    DbSet<Match> Matches { get; }
     DbSet<FileEntity> Files { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);

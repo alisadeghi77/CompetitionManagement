@@ -3,9 +3,9 @@ using Domain.Common;
 
 namespace Domain.Entities;
 
-public class CompetitionBracket : BaseAuditableEntity
+public class Bracket : BaseAuditableEntity
 {
-    private List<CompetitionBracketMatch> _matches = new();
+    private List<Match> _matches = new();
 
     public string KeyParams { get; private set; }
 
@@ -18,10 +18,10 @@ public class CompetitionBracket : BaseAuditableEntity
 
     public Competition Competition { get; private set; }
 
-    public IReadOnlyCollection<CompetitionBracketMatch> Matches => _matches;
+    public IReadOnlyCollection<Match> Matches => _matches;
 
 
-    private CompetitionBracket(
+    private Bracket(
         long competitionId, 
         List<ParticipantParam> registerParams,
         string keyParams,
@@ -33,11 +33,10 @@ public class CompetitionBracket : BaseAuditableEntity
         Type = type;
     }
 
-    public static CompetitionBracket Create(Competition competition, List<ParticipantParam> registerParams, BracketsType type)
+    public static Bracket Create(Competition competition, List<ParticipantParam> registerParams, BracketsType type)
     {
-        var model = new CompetitionBracket(competition.Id, registerParams, GenerateKey(registerParams), type)
+        var model = new Bracket(competition.Id, registerParams, GenerateKey(registerParams), type)
         {
-            
             Competition = competition
         };
         

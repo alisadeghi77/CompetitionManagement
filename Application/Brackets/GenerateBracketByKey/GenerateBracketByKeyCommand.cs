@@ -1,24 +1,24 @@
-﻿using Application.Common;
-using Application.CompetitionBrackets.BracketsBuilder;
+﻿using Application.Brackets.BracketsBuilder;
+using Application.Common;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CompetitionBrackets.GenerateBrackets;
+namespace Application.Brackets.GenerateBracketByKey;
 
-public record GenerateBracketsCommand(long CompetitionId) : IRequest;
+public record GenerateBracketByKeyCommand(long CompetitionId, string BracketKey) : IRequest;
 
-public class GenerateBracketsCommandHandler(IApplicationDbContext dbContext)
-    : IRequestHandler<GenerateBracketsCommand>
+public class GenerateBracketByKeyCommandHandler(IApplicationDbContext dbContext)
+    : IRequestHandler<GenerateBracketByKeyCommand>
 {
     public async Task Handle(
-        GenerateBracketsCommand request,
+        GenerateBracketByKeyCommand request,
         CancellationToken cancellationToken)
     {
         var competition = await dbContext.Competitions
-            .Include(c => c.Brackets)
+            .Include(c => c.Brackets.Where(w => w.KeyParams.Equals(request.BracketKey)))
             .ThenInclude(c => c.Matches)
             .Include(c => c.Participants)
             .ThenInclude(c => c.CoachUser)
@@ -33,26 +33,24 @@ public class GenerateBracketsCommandHandler(IApplicationDbContext dbContext)
             throw new UnprocessableEntityException("مسابقه مورد نظر امکان جدول بندی ندارد.");
 
         if (competition.Brackets.Any())
-            throw new UnprocessableEntityException("مسابقه مورد نظر جدول بندی شده است.");
-
-        if (competition.Participants.All(w => w.Status != RegisterStatus.Approved))
-            throw new UnprocessableEntityException("مسابقه مورد نظر شرکت کننده تایید شده ندارد.");
-
-        var combinationParams = GenerateCombinations(competition.RegisterParams);
-        foreach (var param in combinationParams)
-        {
-            var participants = competition.Participants.Where(w => w.HasSameParamsWith(param)).ToList();
-            if (!participants.Any())
-                continue;
-
-            var competitionBracket = CompetitionBracket.Create(competition, param, BracketsType.SingleElimination);
-            var bracketMatches = CompetitionBracketMatchBuilder.BuilderDirector(competitionBracket, participants);
-            
-            dbContext.CompetitionBrackets.Add(competitionBracket);
-            dbContext.CompetitionBracketMatches.AddRange(bracketMatches);
-        }
+            throw new UnprocessableEntityException("برای جدول مورد نظر مسابقه ثبت شده است.");
 
 
+        var combinationParam = GenerateCombinations(competition.RegisterParams)
+            .FirstOrDefault(w => Bracket.GenerateKey(w) == request.BracketKey);
+        if (combinationParam is null)
+            throw new UnprocessableEntityException("جدول مورد نظر امکان ساخته شدن ندارد.");
+
+        var participants = competition.Participants.Where(w => w.HasSameParamsWith(combinationParam)).ToList();
+        if (!participants.Any())
+            throw new UnprocessableEntityException("جدول مورد نظر شرکت کننده تایید شده ندارد.");
+
+        var bracket = Bracket.Create(competition, combinationParam, BracketsType.SingleElimination);
+        var bracketMatches = BracketMatchBuilder.BuilderDirector(bracket, participants);
+        
+        dbContext.Brackets.Add(bracket);
+        dbContext.Matches.AddRange(bracketMatches);
+        
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 

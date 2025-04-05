@@ -9,7 +9,7 @@ namespace Domain.Entities;
 public class Competition : BaseAuditableEntity
 {
     private readonly List<Participant> _participants = new();
-    private List<CompetitionBracket>? _brackets = new();
+    private List<Bracket>? _brackets = new();
 
     public required string PlannerUserId { get; set; }
     public required ApplicationUser PlannerUser { get; set; }
@@ -27,7 +27,7 @@ public class Competition : BaseAuditableEntity
     public CompetitionParam RegisterParams { get; private set; }
 
     public IReadOnlyCollection<Participant> Participants => _participants;
-    public IReadOnlyCollection<CompetitionBracket> Brackets => _brackets;
+    public IReadOnlyCollection<Bracket> Brackets => _brackets;
 
     public static Competition Create(
         ApplicationUser plannerUser,

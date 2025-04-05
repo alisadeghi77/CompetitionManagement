@@ -1,5 +1,5 @@
 ﻿using Api.Models;
-using Application.CompetitionBracketMatches.SetMatchWinner;
+using Application.Matches.SetMatchWinner;
 using Domain.Constant;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +9,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CompetitionBracketMatchController(ISender sender) : ControllerBase
+public class MatchController(ISender sender) : ControllerBase
 {
     [HttpPost]
     [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]

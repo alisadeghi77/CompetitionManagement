@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.Configurations;
 
-public class CompetitionBracketConfiguration : IEntityTypeConfiguration<CompetitionBracket>
+public class BracketConfiguration : IEntityTypeConfiguration<Bracket>
 {
-    public void Configure(EntityTypeBuilder<CompetitionBracket> builder)
+    public void Configure(EntityTypeBuilder<Bracket> builder)
     {
-        builder.ToTable("CompetitionBrackets");
+        builder.ToTable("Brackets");
 
         builder.HasKey(ctd => ctd.Id);
         

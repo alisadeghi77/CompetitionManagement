@@ -4,7 +4,7 @@ using Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CompetitionBrackets.DeleteBrackets;
+namespace Application.Brackets.DeleteBrackets;
 
 public record DeleteBracketsCommand(long CompetitionId) : IRequest;
 

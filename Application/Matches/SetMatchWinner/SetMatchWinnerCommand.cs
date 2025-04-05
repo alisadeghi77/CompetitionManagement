@@ -3,7 +3,7 @@ using Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CompetitionBracketMatches.SetMatchWinner;
+namespace Application.Matches.SetMatchWinner;
 
 public record SetMatchWinnerCommand(Guid MatchId, long ParticipantId) : IRequest;
 
@@ -12,7 +12,7 @@ public class SetMatchWinnerCommandHandler(IApplicationDbContext dbContext)
 {
     public async Task Handle(SetMatchWinnerCommand request, CancellationToken cancellationToken)
     {
-        var match = await dbContext.CompetitionBracketMatches
+        var match = await dbContext.Matches
             .Include(c => c.FirstParticipant)
             .Include(c => c.SecondParticipant)
             .Include(c => c.NextMatch)
@@ -29,7 +29,7 @@ public class SetMatchWinnerCommandHandler(IApplicationDbContext dbContext)
         else
             throw new UnprocessableEntityException("شرکت کننده مورد نظر برای این بازی یافت نشد.");
 
-        dbContext.CompetitionBracketMatches.Update(match);
+        dbContext.Matches.Update(match);
         
         await dbContext.SaveChangesAsync(cancellationToken);
     }

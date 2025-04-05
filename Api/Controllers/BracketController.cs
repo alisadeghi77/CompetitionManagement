@@ -1,6 +1,6 @@
-﻿using Application.CompetitionBrackets.DeleteBrackets;
-using Application.CompetitionBrackets.GenerateBracketByKey;
-using Application.CompetitionBrackets.GenerateBrackets;
+﻿using Application.Brackets.DeleteBrackets;
+using Application.Brackets.GenerateBracketByKey;
+using Application.Brackets.GenerateBrackets;
 using Domain.Constant;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +10,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CompetitionBracketController(ISender sender) : ControllerBase
+public class BracketController(ISender sender) : ControllerBase
 {
     [HttpPost("{competitionId}")]
     [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]

@@ -1,45 +1,45 @@
 ﻿using Domain.Entities;
 using Domain.Enums;
 
-namespace Application.CompetitionBrackets.BracketsBuilder;
+namespace Application.Brackets.BracketsBuilder;
 
-public class CompetitionBracketMatchBuilder
+public class BracketMatchBuilder
 {
     private int _bracketSize;
     private List<Participant> _participants = new();
-    private CompetitionBracket _competitionBracket;
-    private List<CompetitionBracketMatch> _competitionBracketMatch;
+    private Bracket _bracket;
+    private List<Match> _matches;
 
-    public static List<CompetitionBracketMatch> BuilderDirector(
-        CompetitionBracket competitionBracket,
+    public static List<Match> BuilderDirector(
+        Bracket bracket,
         List<Participant> participants) =>
-        new CompetitionBracketMatchBuilder()
-            .SetCompetitionBracket(competitionBracket)
+        new BracketMatchBuilder()
+            .SetBracket(bracket)
             .SetParticipants(participants)
-            .GenerateCompetitionBracketMatch()
+            .GenerateMatch()
             .AssignByes()
             .Build();
 
-    public CompetitionBracketMatchBuilder SetCompetitionBracket(CompetitionBracket competitionBracket)
+    public BracketMatchBuilder SetBracket(Bracket bracket)
     {
-        _competitionBracket = competitionBracket;
+        _bracket = bracket;
         return this;
     }
 
-    public CompetitionBracketMatchBuilder SetParticipants(List<Participant> participants)
+    public BracketMatchBuilder SetParticipants(List<Participant> participants)
     {
         _participants = participants;
         _bracketSize = NextPowerOfTwo(_participants.Count);
         return this;
     }
     
-    public CompetitionBracketMatchBuilder GenerateCompetitionBracketMatch()
+    public BracketMatchBuilder GenerateMatch()
     {
-        _competitionBracketMatch = BuildMatchTree(_bracketSize);
+        _matches = BuildMatchTree(_bracketSize);
         return this;
     }
 
-    public CompetitionBracketMatchBuilder AssignByes()
+    public BracketMatchBuilder AssignByes()
     {
         var byeCount = _bracketSize - _participants.Count;
 
@@ -64,19 +64,19 @@ public class CompetitionBracketMatchBuilder
             })
             .Take(byeCount);
 
-        foreach (var item in _competitionBracketMatch.Select((m, i) => new { m, f = i * 2, s = i * 2 + 1 }))
+        foreach (var item in _matches.Select((m, i) => new { m, f = i * 2, s = i * 2 + 1 }))
         {
             if (byePositions.Any(w => w == item.f))
-                _competitionBracketMatch.First(w => w.Id == item.m.Id).SetFirstParticipantsBye();
+                _matches.First(w => w.Id == item.m.Id).SetFirstParticipantsBye();
 
             if (byePositions.Any(w => w == item.s))
-                _competitionBracketMatch.First(w => w.Id == item.m.Id).SetSecondParticipantsBye();
+                _matches.First(w => w.Id == item.m.Id).SetSecondParticipantsBye();
         }
 
         return this;
     }
 
-    public List<CompetitionBracketMatch> Build()
+    public List<Match> Build()
     {
         var modifiableParticipants = new List<Participant>(_participants);
 
@@ -84,7 +84,7 @@ public class CompetitionBracketMatchBuilder
             .GroupBy(f => f.CoachUserId)
             .ToDictionary(g => g.Key, g => g.Count());
 
-        foreach (var match in _competitionBracketMatch)
+        foreach (var match in _matches)
         {
             if (match.IsFirstParticipantBye)
             {
@@ -93,7 +93,7 @@ public class CompetitionBracketMatchBuilder
                 {
                     var exception = new Exception("Expected participants not found");
                     exception.Data.Add("Participants", _participants);
-                    exception.Data.Add("CompetitionBracket", _competitionBracket);
+                    exception.Data.Add("Bracket", _bracket);
                     throw exception;
                 }
 
@@ -108,7 +108,7 @@ public class CompetitionBracketMatchBuilder
                 {
                     var exception = new Exception("Expected participants not found");
                     exception.Data.Add("Participants", _participants);
-                    exception.Data.Add("CompetitionBracket", _competitionBracket);
+                    exception.Data.Add("Bracket", _bracket);
                     throw exception;
                 }
 
@@ -125,7 +125,7 @@ public class CompetitionBracketMatchBuilder
                 {
                     var exception = new Exception("Expected participants not found");
                     exception.Data.Add("Participants", _participants);
-                    exception.Data.Add("CompetitionBracket", _competitionBracket);
+                    exception.Data.Add("Bracket", _bracket);
                     throw exception;
                 }
 
@@ -139,7 +139,7 @@ public class CompetitionBracketMatchBuilder
             }
         }
 
-        return _competitionBracketMatch;
+        return _matches;
     }
 
     
@@ -156,15 +156,15 @@ public class CompetitionBracketMatchBuilder
             .MaxBy(f => teamDistribution.GetValueOrDefault(f.CoachUserId, 0));
     }
 
-    protected List<CompetitionBracketMatch> BuildMatchTree(int bracketSize)
+    protected List<Match> BuildMatchTree(int bracketSize)
     {
         var lastPositionNumber = bracketSize - 1;
         var matchCount = bracketSize / 2;
         var currentRound = Enumerable
             .Range(0, matchCount)
-            .Select(_ => CompetitionBracketMatch.Create(
+            .Select(_ => Match.Create(
                 Guid.NewGuid(),
-                _competitionBracket,
+                _bracket,
                 (RoundType)bracketSize,
                 lastPositionNumber--))
             .ToList();
