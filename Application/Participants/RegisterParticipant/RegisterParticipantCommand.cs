@@ -39,11 +39,17 @@ public class RegisterParticipantCommandHandler(
         if (competition.Status != CompetitionStatus.PendToStart || !competition.CanRegister || !competition.IsVisible)
             throw new UnprocessableEntityException("زمان ثبت نام مسابقه به پایان رسیده است.");
 
+        var isUserAlreadyRegister = await dbContext.Participants
+            .AnyAsync(w => w.ParticipantUserId == participantUser.Id &&
+                           w.CompetitionId == competition.Id, cancellationToken);
+
+        if (isUserAlreadyRegister)
+            throw new UnprocessableEntityException("شما قبلا ثبت نام کردید.");
+
         var participant = Participant.Create(
             competition,
             participantUser,
             coachUser,
-            request.CoachPhoneNumber,
             request.Params.Select(s => new ParticipantParam
             {
                 Key = s.Key,

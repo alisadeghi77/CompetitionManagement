@@ -15,8 +15,6 @@ public class Participant : BaseAuditableEntity
 
     public required ApplicationUser ParticipantUser { get; set; }
 
-    public string? CoachPhoneNumber { get; set; }
-    
     public string CoachUserId { get; private set; }
     
     public ApplicationUser CoachUser { get; private set; }
@@ -31,7 +29,6 @@ public class Participant : BaseAuditableEntity
         Competition competition,
         ApplicationUser participantUser,
         ApplicationUser coachUser,
-        string? coachPhoneNumber,
         IEnumerable<ParticipantParam> registerParams)
     {
         var register = new Participant
@@ -40,7 +37,6 @@ public class Participant : BaseAuditableEntity
             CompetitionId = competition.Id,
             ParticipantUser = participantUser,
             ParticipantUserId = participantUser.Id,
-            CoachPhoneNumber = coachPhoneNumber,
             CoachUserId = coachUser.Id,
             CoachUser = coachUser,
             Status = RegisterStatus.Pending,

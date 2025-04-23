@@ -24,7 +24,7 @@ public class Competition : BaseAuditableEntity
 
 
     [Column("RegisterParams", TypeName = "jsonb")]
-    public CompetitionParam RegisterParams { get; private set; }
+    public CompetitionParam? RegisterParams { get; private set; }
 
     public IReadOnlyCollection<Participant> Participants => _participants;
     public IReadOnlyCollection<Bracket> Brackets => _brackets;

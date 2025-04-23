@@ -15,9 +15,6 @@ public class ParticipantConfiguration : IEntityTypeConfiguration<Participant>
         
         builder.Property(cr => cr.Id).ValueGeneratedOnAdd();
 
-        builder.Property(cr => cr.CoachPhoneNumber)
-            .HasMaxLength(15)
-            .IsRequired();
 
         builder.Property(cr => cr.Status)
             .IsRequired();

@@ -47,11 +47,11 @@ public class VerifyCommandHandler(
         var userRoles = await userManager.GetRolesAsync(user);
 
         var claims = new List<Claim> { new(ClaimTypes.Name, user.UserName!), new(ClaimTypes.NameIdentifier, user.Id) };
-        
+
         claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var token = tokenService.GenerateToken(claims);
-
+        
         return new LoginDto(token, user.UserName!, user.FullName);
     }
 }

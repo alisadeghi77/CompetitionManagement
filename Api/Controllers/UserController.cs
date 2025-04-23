@@ -54,5 +54,7 @@ public class UserController(ISender sender) : ControllerBase
     [HttpGet("Coaches")]
     [Authorize]
     public async Task<IActionResult> GetCoaches([FromQuery] string phoneNumber)
-        => Ok(await sender.Send(new GetCoachesQuery(phoneNumber)));
+    {
+        return Ok(await sender.Send(new GetCoachesQuery(phoneNumber)));  
+    }
 }

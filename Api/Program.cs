@@ -19,11 +19,11 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddMemoryCache();
-        
+
         builder.Services
             .RegisterApplication()
             .RegisterInfrastructure(builder.Configuration);
-        
+
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
@@ -49,7 +49,7 @@ public class Program
                         return Task.CompletedTask;
                     }
                 };
-                
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -58,7 +58,8 @@ public class Program
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = builder.Configuration["Jwt:Issuer"],
                     ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
                 };
             });
 
@@ -70,7 +71,8 @@ public class Program
             // Add JWT Authentication support in Swagger
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                Description =
+                    "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.ApiKey,
@@ -95,8 +97,17 @@ public class Program
 
         builder.Services.AddControllers();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
         var app = builder.Build();
-
 
         using var scope = app.Services.CreateScope();
         SeedService.Initialize(scope.ServiceProvider).Wait();
@@ -106,14 +117,16 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); });
         }
-        
-        app.UseStaticFiles();  
-        
+
+        app.UseStaticFiles();
+
         app.UseMiddleware<ResponseHandlerMiddleware>();
-        
+
         app.UseAuthentication();
-        
+
         app.UseAuthorization();
+
+        app.UseCors(); // This uses the default policy
 
         app.MapControllers();
 

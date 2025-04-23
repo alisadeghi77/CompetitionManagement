@@ -21,7 +21,7 @@ public class ApplicationUser : IdentityUser
     public string? NationalId { get; private set; }
 
     public List<Competition> CompetitionDefinitions { get; set; } = new();
-    public List<IdentityRole> Roles { get; set; } = new();
+    public List<IdentityUserRole<string>> Roles { get; set; } = new();
 
 
     [NotMapped]
