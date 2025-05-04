@@ -1,4 +1,5 @@
 ﻿using Api.Models;
+using Application.Brackets.GetBracketMatches;
 using Application.Matches.SetMatchWinner;
 using Domain.Constant;
 using MediatR;
@@ -18,5 +19,12 @@ public class MatchController(ISender sender) : ControllerBase
         await sender.Send(new SetMatchWinnerCommand(request.MatchId, request.ParticipantId));
         return Ok();
     }
+
+    
+    [HttpGet("{bracketKey}")]
+    [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
+    public async Task<IActionResult> GetBracketMatches([FromRoute] string bracketKey)
+        => Ok(await sender.Send(new GetMatchesByBracketIdQuery(bracketKey)));
+
 
 }
