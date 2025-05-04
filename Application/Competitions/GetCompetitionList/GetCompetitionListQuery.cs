@@ -12,7 +12,6 @@ public class GetCompetitionListQueryHandler(IApplicationDbContext dbContext) :
     public async Task<List<CompetitionDto>> Handle(
         GetCompetitionListQuery query, CancellationToken cancellationToken) =>
         await dbContext.Competitions
-            .Where(w => w.IsVisible)
             .Select(s => new CompetitionDto(
                 s.Id,
                 s.Title,

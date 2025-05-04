@@ -9,9 +9,9 @@ namespace Application.Competitions.ChangeCompetitionRegistration;
 public record ChangeCompetitionRegistrationCommand(long Id) : IRequest;
 
 public class ChangeCompetitionRegistrationCommandHandler(IApplicationDbContext dbContext)
-    : IRequestHandler<ChangeCompetitionVisibilityCommand>
+    : IRequestHandler<ChangeCompetitionRegistrationCommand>
 {
-    public async Task Handle(ChangeCompetitionVisibilityCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ChangeCompetitionRegistrationCommand request, CancellationToken cancellationToken)
     {
         var competition = await dbContext.Competitions
             .FirstOrDefaultAsync(w => w.Id == request.Id, cancellationToken);

@@ -1,8 +1,10 @@
 ﻿using Api.ExtensionMethods;
 using Api.Models;
+using Application.Participants.GetParticipantList;
 using Application.Participants.RegisterChangeStatus;
 using Application.Participants.RegisterParticipant;
 using Domain.Constant;
+using Domain.Contracts;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -12,16 +14,16 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ParticipantController(ISender sender) : ControllerBase
+public class ParticipantController(ISender sender, ICurrentUser currentUser) : ControllerBase
 {
     [HttpGet]
     [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
-    public async Task<IActionResult> GetList() => throw new NotImplementedException();
-
+    public async Task<IActionResult> GetList([FromQuery] long competitionId)
+        => Ok(await sender.Send(new GetParticipantListQuery(competitionId, currentUser.UserId!, currentUser.Roles)));
 
     [HttpPost]
     [Authorize(Roles = $"{RoleConstant.Participant}")]
-    public async Task<IActionResult> CompetitionDefinition(RegisterParticipantRequest request) =>
+    public async Task<IActionResult> Register(RegisterParticipantRequest request) =>
         Ok(await sender.Send(new RegisterParticipantCommand(
             this.GetUserId()!,
             request.CoachId,
@@ -30,20 +32,20 @@ public class ParticipantController(ISender sender) : ControllerBase
             request.Params)));
 
 
-    [HttpPatch("approve/{ParticipantId}")]
+    [HttpPatch("approve/{participantId}")]
     [Authorize(Roles = $"{RoleConstant.Planner},{RoleConstant.Admin}")]
-    public async Task<IActionResult> RegisterApprove([FromRoute] long id)
+    public async Task<IActionResult> RegisterApprove([FromRoute] long participantId)
     {
-        await sender.Send(new ParticipantRegisterChangeStatusCommand(id, RegisterStatus.Approved));
+        await sender.Send(new ParticipantRegisterChangeStatusCommand(participantId, RegisterStatus.Approved));
         return Ok();
     }
-    
-    
-    [HttpPatch("reject/{ParticipantId}")]
+
+
+    [HttpPatch("reject/{participantId}")]
     [Authorize(Roles = $"{RoleConstant.Planner},{RoleConstant.Admin}")]
-    public async Task<IActionResult> RegisterReject([FromRoute] long id)
+    public async Task<IActionResult> RegisterReject([FromRoute] long participantId)
     {
-        await sender.Send(new ParticipantRegisterChangeStatusCommand(id, RegisterStatus.Rejected));
+        await sender.Send(new ParticipantRegisterChangeStatusCommand(participantId, RegisterStatus.Rejected));
         return Ok();
     }
 }

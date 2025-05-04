@@ -5,13 +5,11 @@ namespace Application.Participants.GetParticipantList;
 
 public record ParticipantDto(
     long Id,
-    string ParticipantId,
-    string ParticipantFirstName,
-    string ParticipantLastName,
+    string ParticipantUserId,
+    string ParticipantFullName,
     string? ParticipantPhoneNumber,
     string CoachId,
-    string CoachFirstName,
-    string CoachLastName,
+    string CoachFullName,
     string? CoachPhoneNumber,
     RegisterStatus Status,
     List<ParticipantParam>? RegisterParams);

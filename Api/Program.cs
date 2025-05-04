@@ -1,6 +1,8 @@
 using System.Text;
 using Api.Middleware;
+using Api.Services;
 using Application;
+using Domain.Contracts;
 using Domain.Entities;
 using Infrastructure;
 using Infrastructure.Data;
@@ -28,6 +30,8 @@ public class Program
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 // Add JWT Authentication
         builder.Services.AddAuthentication(options =>
             {

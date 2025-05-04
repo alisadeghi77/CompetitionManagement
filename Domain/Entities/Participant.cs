@@ -29,7 +29,7 @@ public class Participant : BaseAuditableEntity
         Competition competition,
         ApplicationUser participantUser,
         ApplicationUser coachUser,
-        IEnumerable<ParticipantParam> registerParams)
+        List<ParticipantParam> registerParams)
     {
         var register = new Participant
         {
@@ -40,6 +40,7 @@ public class Participant : BaseAuditableEntity
             CoachUserId = coachUser.Id,
             CoachUser = coachUser,
             Status = RegisterStatus.Pending,
+            RegisterParams = registerParams
         };
 
         new ParticipantValidator().ValidateAndThrow(register);

@@ -1,6 +1,7 @@
 ﻿using Application.Brackets.DeleteBrackets;
 using Application.Brackets.GenerateBracketByKey;
 using Application.Brackets.GenerateBrackets;
+using Application.Brackets.GetAvailableBracketKeys;
 using Application.Brackets.GetBracketsWinnerReport;
 using Application.Brackets.GetCoachMedalReport;
 using Domain.Constant;
@@ -14,6 +15,10 @@ namespace Api.Controllers;
 [Route("api/[controller]")]
 public class BracketController(ISender sender) : ControllerBase
 {
+    [HttpGet("available-keys/{competitionId}")]
+    [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
+    public async Task<IActionResult> GetAvailableBracketKeys([FromRoute] long competitionId)
+        => Ok(await sender.Send(new GetAvailableBracketKeysQuery(competitionId)));
  
     [HttpGet("brackets-report/{bracketId}")]
     [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
@@ -40,7 +45,6 @@ public class BracketController(ISender sender) : ControllerBase
         await sender.Send(new GenerateBracketByKeyCommand(competitionId, bracketKey));
         return Ok();
     }
-
 
     [HttpDelete("{competitionId}")]
     [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]

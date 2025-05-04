@@ -14,7 +14,7 @@ public record RegisterParticipantCommand(
     string? CoachId,
     string? CoachPhoneNumber,
     long CompetitionId,
-    List<(string Key, string Value)> Params) : IRequest<long>;
+    List<ParticipantParam> Params) : IRequest<long>;
 
 public class RegisterParticipantCommandHandler(
     ISmsService smsService,
@@ -54,7 +54,8 @@ public class RegisterParticipantCommandHandler(
             {
                 Key = s.Key,
                 Value = s.Value
-            }));
+            })
+            .ToList());
 
         dbContext.Participants.Add(participant);
 

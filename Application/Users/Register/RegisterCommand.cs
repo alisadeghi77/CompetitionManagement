@@ -3,6 +3,7 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Hosting;
 
 namespace Application.Users.Register;
 
@@ -11,6 +12,7 @@ public record RegisterCommand(string PhoneNumber, string FirstName, string LastN
 public class RegisterCommandHandler(
     IMemoryCache cache,
     ISmsService smsService,
+    IHostEnvironment hostEnvironment,
     UserManager<ApplicationUser> userManager)
     : IRequestHandler<RegisterCommand>
 {
@@ -60,7 +62,7 @@ public class RegisterCommandHandler(
 
     private async Task SendOtp(string phoneNumber, ApplicationUser user)
     {
-        var otp = new Random().Next(1000, 9999).ToString();
+        var otp = hostEnvironment.IsDevelopment() ? "1111" : new Random().Next(1000, 9999).ToString();
         var cacheKey = $"OTP_{phoneNumber}";
 
         await smsService.SendOtp(user.UserName!, otp);

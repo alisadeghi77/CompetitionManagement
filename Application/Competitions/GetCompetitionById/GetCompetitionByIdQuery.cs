@@ -1,4 +1,6 @@
+using System.Text.Json;
 using Application.Common;
+using Domain.Entities;
 using Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +15,11 @@ public class GetCompetitionByIdQueryHandler(IApplicationDbContext dbContext) :
     public async Task<CompetitionDetailsDto?> Handle(GetCompetitionByIdQuery query, CancellationToken cancellationToken)
     {
         var competition = await dbContext.Competitions
-            .FirstOrDefaultAsync(w => w.Id == query.Id && w.IsVisible, cancellationToken);
+            .FirstOrDefaultAsync(w => w.Id == query.Id, cancellationToken);
 
         if (competition is null)
             throw new NotFoundException("مسابقه یافت نشد.");
-        
+
         return new CompetitionDetailsDto(
             competition.Id,
             competition.Title,
@@ -26,6 +28,8 @@ public class GetCompetitionByIdQueryHandler(IApplicationDbContext dbContext) :
             competition.BannerImageId,
             competition.LicenseImageId,
             competition.Status,
+            competition.IsVisible,
+            competition.CanRegister,
             competition.RegisterParams);
     }
 }
