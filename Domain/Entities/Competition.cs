@@ -61,7 +61,61 @@ public class Competition : BaseAuditableEntity
 
     public void SetApprove() => Status = CompetitionStatus.PendToStart;
     public void SetOnProgress() => Status = CompetitionStatus.OnProgress;
+
+    public List<List<ParticipantParam>> GetParams() => GenerateAllCombinations(RegisterParams);
+
+    public List<ParamsCombination> GetParamsWithKeys()
+    {
+        var combinationResult = GenerateAllCombinations(RegisterParams);
+        return combinationResult.Select(s => new ParamsCombination(s, Bracket.GenerateKey(s))).ToList();
+    }
+
+    private List<List<ParticipantParam>> GenerateAllCombinations(CompetitionParam param,
+        List<ParticipantParam>? currentPath = null)
+    {
+        var results = new List<List<ParticipantParam>>();
+        currentPath ??= new List<ParticipantParam>();
+
+        if (param.Values == null || !param.Values.Any())
+            return results;
+
+        foreach (var value in param.Values)
+        {
+            var path = new List<ParticipantParam>(currentPath)
+            {
+                new ParticipantParam { Key = param.Key, Value = value.Key }
+            };
+
+            if (value.Params == null || !value.Params.Any())
+            {
+                results.Add(path);
+                continue;
+            }
+
+            var paramResults = new List<List<ParticipantParam>> { path };
+            foreach (var nestedParam in value.Params)
+            {
+                var newResults = new List<List<ParticipantParam>>();
+                foreach (var currentResult in paramResults)
+                {
+                    var nestedCombinations = GenerateAllCombinations(nestedParam, currentResult);
+                    if (nestedCombinations.Any())
+                        newResults.AddRange(nestedCombinations);
+                    else
+                        newResults.Add(currentResult);
+                }
+
+                paramResults = newResults;
+            }
+
+            results.AddRange(paramResults);
+        }
+
+        return results;
+    }
 }
+
+public record ParamsCombination(List<ParticipantParam> ParamsList, string Key);
 
 public record CompetitionParam
 {

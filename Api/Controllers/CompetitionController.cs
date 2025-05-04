@@ -1,5 +1,6 @@
 ﻿using Api.ExtensionMethods;
 using Api.Models;
+using Application.Competitions;
 using Application.Competitions.ChangeCompetitionRegistration;
 using Application.Competitions.ChangeCompetitionVisibility;
 using Application.Competitions.CompetitionDefinition;
@@ -21,7 +22,15 @@ public class CompetitionController(ISender sender) : ControllerBase
 {
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> GetList([FromQuery] GetCompetitionListQuery query) => Ok(await sender.Send(query));
+    public async Task<IActionResult> GetList([FromQuery] GetCompetitionListQuery query)
+    {
+        var data = await sender.Send(query);
+        var list = new List<CompetitionDto>();
+        if (data.Any())
+            for (int i = 0; i < 100; i++)
+                list.Add(data.FirstOrDefault());
+        return Ok(list);
+    }
 
     [HttpGet("{id}")]
     [AllowAnonymous]
