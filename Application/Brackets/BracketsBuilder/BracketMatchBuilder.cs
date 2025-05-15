@@ -151,10 +151,12 @@ public class BracketMatchBuilder
     {
         if (participant.Count == 0)
             return null;
-
-        return participant
+        
+        var result =  participant
             .Where(f => excludeTeam is null || f.CoachUserId != excludeTeam)
             .MaxBy(f => teamDistribution.GetValueOrDefault(f.CoachUserId, 0));
+        
+        return result ?? participant.MaxBy(f => teamDistribution.GetValueOrDefault(f.CoachUserId, 0));
     }
 
     protected List<Match> BuildMatchTree(int bracketSize)
