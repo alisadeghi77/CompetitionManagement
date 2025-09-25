@@ -22,6 +22,7 @@ public class GetParticipantListQueryHandler(IApplicationDbContext dbContext)
             .Where(w => w.CompetitionId == request.CompetitionId &&
                         (isAdmin || w.Competition.PlannerUserId == request.UserRequestingId) &&
                         w.Competition.Status != CompetitionStatus.End)
+            .OrderByDescending(c => c.Id)
             .Select(s => new ParticipantDto(
                 s.Id,
                 s.ParticipantUser.Id,

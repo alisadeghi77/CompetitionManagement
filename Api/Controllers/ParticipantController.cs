@@ -3,6 +3,7 @@ using Api.Models;
 using Application.Participants.GetParticipantList;
 using Application.Participants.RegisterChangeStatus;
 using Application.Participants.RegisterParticipant;
+using Application.Participants.RegisterParticipantByAdmin;
 using Domain.Constant;
 using Domain.Contracts;
 using Domain.Enums;
@@ -30,6 +31,11 @@ public class ParticipantController(ISender sender, ICurrentUser currentUser) : C
             request.CoachPhoneNumber,
             request.CompetitionId,
             request.Params)));
+
+            
+    [HttpPost("by-admin")]
+    [Authorize(Roles = $"{RoleConstant.Admin}")]
+    public async Task<IActionResult> RegisterByAdmin(RegisterParticipantByAdminCommand request) => Ok(await sender.Send(request));
 
 
     [HttpPatch("approve/{participantId}")]

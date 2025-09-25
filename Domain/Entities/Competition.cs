@@ -113,6 +113,15 @@ public class Competition : BaseAuditableEntity
 
         return results;
     }
+
+    public void Update(string title, DateTime date, string address, long bannerFileId, long licenseFileId)
+    {
+        Title = title;
+        Date = date;
+        Address = address;
+        BannerImageId = bannerFileId;
+        LicenseImageId = licenseFileId;
+    }
 }
 
 public record ParamsCombination(List<ParticipantParam> ParamsList, string Key);

@@ -8,14 +8,13 @@ namespace Application.Competitions.CompetitionDefinition;
 
 public record CompetitionDefinitionCommand(
     string UserId,
-    string CompetitionTitle,
-    DateTime CompetitionDate,
-    string CompetitionAddress,
-    long LicenseFileId,
-    long BannerFileId) : IRequest<long>;
+    string Title,
+    DateTime Date,
+    string Address,
+    long LicenseImageId,
+    long BannerImageId) : IRequest<long>;
 
 public class CompetitionDefinitionCommandHandler(
-    ISmsService smsService,
     IApplicationDbContext dbContext,
     UserManager<ApplicationUser> userManager) :
     IRequestHandler<CompetitionDefinitionCommand, long>
@@ -29,11 +28,11 @@ public class CompetitionDefinitionCommandHandler(
 
         var competition = Competition.Create(
             plannerUser,
-            command.CompetitionTitle,
-            command.CompetitionDate,
-            command.CompetitionAddress,
-            command.BannerFileId,
-            command.LicenseFileId);
+            command.Title,
+            command.Date,
+            command.Address,
+            command.BannerImageId,
+            command.LicenseImageId);
 
         dbContext.Competitions.Add(competition);
 

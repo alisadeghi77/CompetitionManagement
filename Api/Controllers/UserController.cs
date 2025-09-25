@@ -51,10 +51,8 @@ public class UserController(ISender sender) : ControllerBase
     }
 
 
-    [HttpGet("Coaches")]
-    [Authorize]
-    public async Task<IActionResult> GetCoaches([FromQuery] string phoneNumber)
-    {
-        return Ok(await sender.Send(new GetCoachesQuery(phoneNumber)));  
-    }
+    [HttpGet("by-role")]
+    // [Authorize]
+    public async Task<IActionResult> GetByRole([FromQuery] string phoneNumber, [FromQuery] string role)
+        => Ok(await sender.Send(new GetUsersByRoleQuery(phoneNumber, role)));
 }

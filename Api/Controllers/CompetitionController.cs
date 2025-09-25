@@ -4,6 +4,7 @@ using Application.Competitions;
 using Application.Competitions.ChangeCompetitionRegistration;
 using Application.Competitions.ChangeCompetitionVisibility;
 using Application.Competitions.CompetitionDefinition;
+using Application.Competitions.CompetitionUpdate;
 using Application.Competitions.GetCompetitionById;
 using Application.Competitions.GetCompetitionList;
 using Application.Competitions.StartCompetition;
@@ -42,11 +43,16 @@ public class CompetitionController(ISender sender) : ControllerBase
     public async Task<IActionResult> CompetitionDefinition(CompetitionDefinitionRequest request) => Ok(
         await sender.Send(new CompetitionDefinitionCommand(
             this.GetUserId()!,
-            request.CompetitionTitle,
-            request.CompetitionDate,
-            request.CompetitionAddress,
-            request.LicenseFileId ?? 0,
-            request.BannerFileId ?? 0)));
+            request.Title,
+            request.Date,
+            request.Address,
+            request.LicenseImageId ?? 0,
+            request.BannerImageId ?? 0)));
+
+
+    [HttpPut]
+    [Authorize(Roles = $"{RoleConstant.Admin}")]
+    public async Task<IActionResult> UpdateCompetition([FromBody] CompetitionUpdateCommand request) => Ok(await sender.Send(request));
 
 
     [HttpPut("params/{id}")]
