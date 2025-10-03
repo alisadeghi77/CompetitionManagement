@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Brackets.GetAvailableBracketKeys;
 
+public record GetAvailableBracketKeysQuery(long CompetitionId) : IRequest<List<ParamsKeyDto>>;
+
 public class GetAvailableBracketKeysQueryHandler(IApplicationDbContext dbContext)
     : IRequestHandler<GetAvailableBracketKeysQuery, List<ParamsKeyDto>>
 {

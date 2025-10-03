@@ -2,7 +2,6 @@
 using Application.Brackets.GenerateBracketByKey;
 using Application.Brackets.GenerateBrackets;
 using Application.Brackets.GetAvailableBracketKeys;
-using Application.Brackets.GetBracketMatches;
 using Application.Brackets.GetBracketsWinnerReport;
 using Application.Brackets.GetCoachMedalReport;
 using Domain.Constant;
