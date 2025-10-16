@@ -25,11 +25,11 @@ public class DeleteBracketsCommandHandler(IApplicationDbContext dbContext)
             throw new UnprocessableEntityException("مسابقه مورد نظر امکان حذف جدول بندی ندارد.");
 
         if (!competition.Brackets.Any())
-            throw new UnprocessableEntityException("مسابقه مورد نظر جدول بندی نشده است.");
+            return;
 
-        dbContext.RemoveRange(competition.Brackets.SelectMany(b => b.Matches));
-        dbContext.RemoveRange(competition.Brackets);
-        
+        dbContext.RemoveRange(competition.Brackets.SelectMany(b => b.Matches).ToArray());
+        dbContext.RemoveRange(competition.Brackets.ToArray());
+
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

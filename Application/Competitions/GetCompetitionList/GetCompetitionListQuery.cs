@@ -19,6 +19,7 @@ public class GetCompetitionListQueryHandler(IApplicationDbContext dbContext) :
                 s.Address,
                 s.BannerImageId,
                 s.LicenseImageId,
+                s.CanRegister,
                 s.Status))
             .ToListAsync(cancellationToken);
 }

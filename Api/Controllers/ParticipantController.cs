@@ -1,5 +1,6 @@
 ﻿using Api.ExtensionMethods;
 using Api.Models;
+using Application.Participants.DeleteParticipantByAdmin;
 using Application.Participants.GetParticipantList;
 using Application.Participants.RegisterChangeStatus;
 using Application.Participants.RegisterParticipant;
@@ -36,6 +37,11 @@ public class ParticipantController(ISender sender, ICurrentUser currentUser) : C
     [HttpPost("by-admin")]
     [Authorize(Roles = $"{RoleConstant.Admin}")]
     public async Task<IActionResult> RegisterByAdmin(RegisterParticipantByAdminCommand request) => Ok(await sender.Send(request));
+
+      
+    [HttpDelete("by-admin/{participantId}")]
+    [Authorize(Roles = $"{RoleConstant.Admin}")]
+    public async Task<IActionResult> DeleteByAdmin([FromRoute] long participantId) => Ok(await sender.Send(new DeleteParticipantByAdminCommand(participantId)));
 
 
     [HttpPatch("approve/{participantId}")]

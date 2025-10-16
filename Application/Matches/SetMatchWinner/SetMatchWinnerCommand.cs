@@ -17,6 +17,7 @@ public class SetMatchWinnerCommandHandler(IApplicationDbContext dbContext)
             .Include(c => c.SecondParticipant)
             .Include(c => c.NextMatch)
             .Include(c => c.WinnerParticipant)
+            .Include(c => c.Bracket)
             .FirstOrDefaultAsync(w => w.Id == request.MatchId, cancellationToken);
 
         if (match is null)

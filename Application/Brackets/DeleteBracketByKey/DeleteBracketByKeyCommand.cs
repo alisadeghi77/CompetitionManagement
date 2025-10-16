@@ -18,9 +18,9 @@ public class DeleteBracketByKeyCommandHandler(IApplicationDbContext dbContext)
                 w.CompetitionId == request.CompetitionId && w.KeyParams.Equals(request.BracketKey), cancellationToken);
 
         if (bracket is null)
-            throw new UnprocessableEntityException("جدول مورد نظر یافت نشد.");
+            return;
 
-        dbContext.RemoveRange(bracket.Matches);
+        dbContext.RemoveRange(bracket.Matches.ToArray());
         dbContext.Remove(bracket);
 
         await dbContext.SaveChangesAsync(cancellationToken);

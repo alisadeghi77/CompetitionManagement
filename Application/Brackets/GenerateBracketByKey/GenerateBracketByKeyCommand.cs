@@ -36,16 +36,15 @@ public class GenerateBracketByKeyCommandHandler(IApplicationDbContext dbContext)
             throw new UnprocessableEntityException("برای جدول مورد نظر مسابقه ثبت شده است.");
 
 
-        var combinationParam = GenerateCombinations(competition.RegisterParams)
-            .FirstOrDefault(w => Bracket.GenerateKey(w) == request.BracketKey);
+        var combinationParam = competition.GetParamsWithKeys().FirstOrDefault(w => w.Key == request.BracketKey);
         if (combinationParam is null)
             throw new UnprocessableEntityException("جدول مورد نظر امکان ساخته شدن ندارد.");
 
-        var participants = competition.Participants.Where(w => w.HasSameParamsWith(combinationParam)).ToList();
+        var participants = competition.Participants.Where(w => w.HasSameParamsWith(combinationParam.ParamsList)).ToList();
         if (!participants.Any())
             throw new UnprocessableEntityException("جدول مورد نظر شرکت کننده تایید شده ندارد.");
 
-        var bracket = Bracket.Create(competition, combinationParam, BracketsType.SingleElimination);
+        var bracket = Bracket.Create(competition, combinationParam.ParamsList, BracketsType.SingleElimination);
         var bracketMatches = BracketMatchBuilder.BuilderDirector(bracket, participants);
         
         dbContext.Brackets.Add(bracket);

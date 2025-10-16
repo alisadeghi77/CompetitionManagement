@@ -22,7 +22,6 @@ public class MatchController(ISender sender) : ControllerBase
 
     
     [HttpGet("{bracketKey}")]
-    [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
     public async Task<IActionResult> GetBracketMatches([FromRoute] string bracketKey)
         => Ok(await sender.Send(new GetMatchesByBracketIdQuery(bracketKey)));
 

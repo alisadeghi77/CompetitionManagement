@@ -10,11 +10,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Application.Participants.RegisterParticipantByAdmin;
 
 public record RegisterParticipantByAdminCommand(
-    string? ParticipantId,
+    string? ParticipantUserId,
     string? PhoneNumber,
     string? FirstName,
     string? LastName,
-    string? CoachId,
+    string? CoachUserId,
     string? CoachPhoneNumber,
     long CompetitionId,
     List<ParticipantParam> Params) : IRequest<long>;
@@ -27,19 +27,19 @@ public class RegisterParticipantByAdminCommandHandler(
 {
     public async Task<long> Handle(RegisterParticipantByAdminCommand request, CancellationToken cancellationToken)
     {
-        if (request.ParticipantId is null && string.IsNullOrEmpty(request.PhoneNumber) && string.IsNullOrEmpty(request.FirstName) && string.IsNullOrEmpty(request.LastName))
+        if (request.ParticipantUserId is null && string.IsNullOrEmpty(request.PhoneNumber) && string.IsNullOrEmpty(request.FirstName) && string.IsNullOrEmpty(request.LastName))
             throw new BadRequestException("اطلاعات شرکت کننده ناقص است.");
 
-        if (request.CoachId is null && string.IsNullOrEmpty(request.CoachPhoneNumber))
+        if (request.CoachUserId is null && string.IsNullOrEmpty(request.CoachPhoneNumber))
             throw new BadRequestException("اطلاعات مربی ناقص است.");
 
         var competition = await dbContext.Competitions.FirstOrDefaultAsync(w => w.Id == request.CompetitionId, cancellationToken);
         if (competition is null)
             throw new UnprocessableEntityException("مسابقه یافت نشد");
 
-        var participantUser = await GetParticipantUser(request.ParticipantId, request.FirstName, request.LastName, request.PhoneNumber);
+        var participantUser = await GetParticipantUser(request.ParticipantUserId, request.FirstName, request.LastName, request.PhoneNumber);
 
-        var coachUser = await GetOrCreateCoachUser(request.CoachId, request.CoachPhoneNumber);
+        var coachUser = await GetOrCreateCoachUser(request.CoachUserId, request.CoachPhoneNumber);
 
 
         if (competition.Status != CompetitionStatus.PendToStart || !competition.CanRegister || !competition.IsVisible)

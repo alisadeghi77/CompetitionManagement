@@ -23,15 +23,8 @@ public class CompetitionController(ISender sender) : ControllerBase
 {
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> GetList([FromQuery] GetCompetitionListQuery query)
-    {
-        var data = await sender.Send(query);
-        var list = new List<CompetitionDto>();
-        if (data.Any())
-            for (int i = 0; i < 100; i++)
-                list.Add(data.FirstOrDefault());
-        return Ok(list);
-    }
+    public async Task<IActionResult> GetList([FromQuery] GetCompetitionListQuery query) => 
+        Ok(await sender.Send(query));
 
     [HttpGet("{id}")]
     [AllowAnonymous]
@@ -52,7 +45,8 @@ public class CompetitionController(ISender sender) : ControllerBase
 
     [HttpPut]
     [Authorize(Roles = $"{RoleConstant.Admin}")]
-    public async Task<IActionResult> UpdateCompetition([FromBody] CompetitionUpdateCommand request) => Ok(await sender.Send(request));
+    public async Task<IActionResult> UpdateCompetition([FromBody] CompetitionUpdateCommand request) =>
+        Ok(await sender.Send(request));
 
 
     [HttpPut("params/{id}")]
@@ -64,7 +58,7 @@ public class CompetitionController(ISender sender) : ControllerBase
         await sender.Send(new UpdateCompetitionParamsCommand(id, param));
         return Ok();
     }
-    
+
     [HttpPatch("start-registration/{id}")]
     [Authorize(Roles = $"{RoleConstant.Admin}")]
     public async Task<IActionResult> StartRegistrationCompetition([FromRoute] long id)
@@ -72,7 +66,7 @@ public class CompetitionController(ISender sender) : ControllerBase
         await sender.Send(new StartCompetitionCommand(id));
         return Ok();
     }
-    
+
     [HttpPatch("change-visibility/{id}")]
     [Authorize(Roles = $"{RoleConstant.Admin}")]
     public async Task<IActionResult> ChangeCompetitionVisibility([FromRoute] long id)
@@ -80,7 +74,7 @@ public class CompetitionController(ISender sender) : ControllerBase
         await sender.Send(new ChangeCompetitionVisibilityCommand(id));
         return Ok();
     }
-    
+
     [HttpPatch("change-registration-status/{id}")]
     [Authorize(Roles = $"{RoleConstant.Admin}")]
     public async Task<IActionResult> ChangeCompetitionRegistrationStatus([FromRoute] long id)

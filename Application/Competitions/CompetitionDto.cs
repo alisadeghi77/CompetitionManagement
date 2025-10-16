@@ -9,4 +9,5 @@ public record CompetitionDto(
     string Address,
     long BannerImageId,
     long LicenseImageId,
+     bool CanRegister,
     CompetitionStatus Status);

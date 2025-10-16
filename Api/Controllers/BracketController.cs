@@ -1,4 +1,5 @@
-﻿using Application.Brackets.DeleteBrackets;
+﻿using Application.Brackets.DeleteBracketByKey;
+using Application.Brackets.DeleteBrackets;
 using Application.Brackets.GenerateBracketByKey;
 using Application.Brackets.GenerateBrackets;
 using Application.Brackets.GetAvailableBracketKeys;
@@ -16,18 +17,17 @@ namespace Api.Controllers;
 public class BracketController(ISender sender) : ControllerBase
 {
     [HttpGet("available-keys/{competitionId}")]
-    [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
     public async Task<IActionResult> GetAvailableBracketKeys([FromRoute] long competitionId)
         => Ok(await sender.Send(new GetAvailableBracketKeysQuery(competitionId)));
- 
+
     [HttpGet("brackets-report/{bracketId}")]
     [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
-    public async Task<IActionResult> GetBracketsWinnerReport(long bracketId) 
+    public async Task<IActionResult> GetBracketsWinnerReport(long bracketId)
         => Ok(await sender.Send(new GetBracketsWinnerReportQuery(bracketId)));
-    
+
     [HttpGet("coach-score-report/{bracketId}")]
     [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
-    public async Task<IActionResult> GetCoachScoreReport(long bracketId) 
+    public async Task<IActionResult> GetCoachScoreReport(long bracketId)
         => Ok(await sender.Send(new GetCoachMedalReportQuery(bracketId)));
 
     [HttpPost("{competitionId}")]
@@ -58,7 +58,7 @@ public class BracketController(ISender sender) : ControllerBase
     [Authorize(Roles = $"{RoleConstant.Admin},{RoleConstant.Planner}")]
     public async Task<IActionResult> DeleteBrackets([FromRoute] int competitionId, [FromRoute] string bracketKey)
     {
-        await sender.Send(new DeleteBracketsCommand(competitionId));
+        await sender.Send(new DeleteBracketByKeyCommand(competitionId, bracketKey));
         return Ok();
     }
 }
